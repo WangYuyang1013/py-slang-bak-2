@@ -20399,7 +20399,9 @@
             }
             else if (value.type === 'error') { // value instanceof CseError
                 const msg = value.message;
-                resolve({ status: 'error', msg });
+                //resolve({ status: 'error', msg } as unknown as Result );
+                const representation = new Representation(cseFinalPrint + msg);
+                resolve({ status: 'finished', context, value, representation });
             }
             else {
                 //const rep: Value = { type: "string", value: cseFinalPrint };

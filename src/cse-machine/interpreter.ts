@@ -54,7 +54,9 @@ export function CSEResultPromise(context: Context, value: Value): Promise<Result
       resolve({ status: 'suspended-cse-eval', context });
     } else if (value.type === 'error') {  // value instanceof CseError
       const msg = value.message;
-      resolve({ status: 'error', msg } as unknown as Result );
+      //resolve({ status: 'error', msg } as unknown as Result );
+      const representation = new Representation(cseFinalPrint + msg);
+      resolve({ status: 'finished', context, value, representation })
     } else {
       //const rep: Value = { type: "string", value: cseFinalPrint };
       const representation = new Representation(value);

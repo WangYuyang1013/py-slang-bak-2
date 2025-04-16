@@ -147,4 +147,4 @@
 # print(run_some_tests())
 # run_some_tests()
 
-math_isnan(3.14)
+math_isnan("9")
