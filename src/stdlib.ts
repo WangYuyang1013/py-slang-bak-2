@@ -5,12 +5,10 @@ import { Value } from "./cse-machine/stash";
 import { gamma, lgamma, erf } from 'mathjs';
 import { addPrint } from "./cse-machine/interpreter";
 import { handleRuntimeError } from "./cse-machine/utils";
-import { MissingRequiredPositionalError, TooManyPositionalArgumentsError, ValueError, TypeError } from "./errors/errors";
+import { MissingRequiredPositionalError, TooManyPositionalArgumentsError, ValueError, TypeError, ZeroDivisionError } from "./errors/errors";
 import { ControlItem } from "./cse-machine/control";
 import { Context } from "./cse-machine/context";
 import * as es from 'estree';
-import { Instr } from "./cse-machine/types";
-import { Identifier } from "./conductor/types";
 
 /*
     Create a map to hold built-in constants.
@@ -146,7 +144,7 @@ export function _int_from_string(args: Value[], source: string, command: Control
   
     // base should be in between 2 and 36
     if (base < 2 || base > 36) {
-        throw new Error(`_int_from_string: base must be in [2..36], got ${base}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "_int_from_string"));
     }
   
     let str = strVal.value as string;
@@ -165,7 +163,7 @@ export function _int_from_string(args: Value[], source: string, command: Control
     // The remaining portion must consist of valid characters for the specified base.
     const parsedNumber = parseInt(str, base);
     if (isNaN(parsedNumber)) {
-        throw new Error(`_int_from_string: cannot parse "${strVal.value}" with base ${base}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "_int_from_string"));
     }
   
     const result: bigint = sign * BigInt(parsedNumber);
@@ -243,10 +241,10 @@ export function isinstance(args: Value[], source: string, command: ControlItem, 
                 expectedType = 'NoneType';
                 break;
             default:
-                throw new Error(`isinstance: unknown type '${classinfo.value}'`);
+                handleRuntimeError(context, new ValueError(source, command as es.Node, context, "isinstance"));
+                return;
         }
     } else {
-        // TODO: If the value is not in string format, additional handling can be added as needed.
         handleRuntimeError(context, new TypeError(source, command as es.Node, context, args[0].type, "string"));
         return;
     }
@@ -276,7 +274,7 @@ export function math_acos(args: Value[], source: string, command: ControlItem, c
     }
 
     if (num < -1 || num > 1) {
-        throw new Error(`math_acos: argument must be in the interval [-1, 1], but got ${num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_acos"));
     }
   
     const result = Math.acos(num);
@@ -304,7 +302,7 @@ export function math_acosh(args: Value[], source: string, command: ControlItem, 
     }
 
     if (num < 1) {
-        throw new Error(`math_acosh: argument must be greater than or equal to 1, but got ${num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_acosh"));
     }
   
     const result = Math.acosh(num);
@@ -331,7 +329,7 @@ export function math_asin(args: Value[], source: string, command: ControlItem, c
     }
   
     if (num < -1 || num > 1) {
-        throw new Error(`math_asin: argument must be in the interval [-1, 1], but got ${num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_asin"));
     }
   
     const result = Math.asin(num);
@@ -436,7 +434,7 @@ export function math_atanh(args: Value[], source: string, command: ControlItem, 
     }
   
     if (num <= -1 || num >= 1) {
-        throw new Error(`math_atanh: argument must be in the interval (-1, 1), but got ${num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_atanh"));
     }
   
     const result = Math.atanh(num);
@@ -595,7 +593,7 @@ export function math_comb(args: Value[], source: string, command: ControlItem, c
     const kVal = BigInt(k.value);
   
     if (nVal < 0 || kVal < 0) {
-        throw new Error(`comb: n and k must be non-negative, got n=${nVal}, k=${kVal}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_comb"));
     }
 
     if (kVal > nVal) {
@@ -628,7 +626,7 @@ export function math_factorial(args: Value[], source: string, command: ControlIt
     const nVal = BigInt(n.value);
   
     if (nVal < 0) {
-      throw new Error(`factorial: argument must be non-negative, but got ${nVal}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_factorial"));
     }
   
     // 0! = 1
@@ -783,7 +781,7 @@ export function math_perm(args: Value[], source: string, command: ControlItem, c
     }
   
     if (n < 0 || k < 0) {
-        throw new Error(`perm: n and k must be non-negative, got n=${n}, k=${k}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_perm"));
     }
 
     if (k > n) {
@@ -954,7 +952,8 @@ export function math_fmod(args: Value[], source: string, command: ControlItem, c
 
     // Divisor cannot be zero
     if (yVal === 0) {
-        throw new Error("fmod: divisor (y) must not be zero");
+        handleRuntimeError(context, new ZeroDivisionError(source, command as es.Node, context));
+        
     }
 
     // JavaScript's % operator behaves similarly to C's fmod
@@ -1011,7 +1010,7 @@ export function math_remainder(args: Value[], source: string, command: ControlIt
     }
 
     if (yValue === 0) {
-        throw new Error(`remainder: divisor y must not be zero`);
+        handleRuntimeError(context, new ZeroDivisionError(source, command as es.Node, context));
     }
 
     const quotient = xValue / yValue;
@@ -1318,7 +1317,7 @@ export function math_log(args: Value[], source: string, command: ControlItem, co
     }
     
     if (num <= 0) {
-        throw new Error(`math_log: argument must be positive, but got ${num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_log"));
     }
   
     if (args.length === 1) {
@@ -1336,7 +1335,7 @@ export function math_log(args: Value[], source: string, command: ControlItem, co
         baseNum = Number(baseArg.value);
     }
     if (baseNum <= 0) {
-        throw new Error(`math_log: base must be positive, but got ${baseNum}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_log"));
     }
   
     const result = Math.log(num) / Math.log(baseNum);
@@ -1361,7 +1360,7 @@ export function math_log10(args: Value[], source: string, command: ControlItem, 
         num = Number(x.value);
     }
     if (num <= 0) {
-        throw new Error(`math_log10: argument must be positive, but got ${num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_log10"));
     }
   
     const result = Math.log10(num);
@@ -1386,7 +1385,7 @@ export function math_log1p(args: Value[], source: string, command: ControlItem, 
         num = Number(x.value);
     }
     if (1 + num <= 0) {
-        throw new Error(`math_log1p: 1 + argument must be positive, but got 1 + ${num} = ${1 + num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_log1p"));
     }
   
     const result = Math.log1p(num);
@@ -1411,7 +1410,7 @@ export function math_log2(args: Value[], source: string, command: ControlItem, c
         num = Number(x.value);
     }
     if (num <= 0) {
-        throw new Error(`math_log2: argument must be positive, but got ${num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_log2"));
     }
   
     const result = Math.log2(num);
@@ -1437,7 +1436,7 @@ export function math_pow(args: Value[], source: string, command: ControlItem, co
     let baseNum: number;
     if (base.type === 'number') {
         baseNum = base.value;
-    } else { // 'bigint'
+    } else {
         baseNum = Number(base.value);
     }
   
@@ -1587,7 +1586,7 @@ export function math_sqrt(args: Value[], source: string, command: ControlItem, c
     }
   
     if (num < 0) {
-        throw new Error(`math_sqrt: argument must be non-negative, but got ${num}`);
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_sqrt"));
     }
   
     const result = Math.sqrt(num);
@@ -1655,6 +1654,7 @@ export function max(args: Value[], source: string, command: ControlItem, context
             }
         }
     } else {
+        // Won't happen
         throw new Error(`max: unsupported type ${firstType}`);
     }
   
@@ -1722,6 +1722,7 @@ export function min(args: Value[], source: string, command: ControlItem, context
             }
         }
     } else {
+        // Won't happen
         throw new Error(`min: unsupported type ${firstType}`);
     }
 
@@ -1783,9 +1784,21 @@ export function time_time(args: Value[], source: string, command: ControlItem, c
     return { type: 'number', value: currentTime };
 }
 
+/**
+ * Converts a number to a string that mimics Python's float formatting behavior.
+ * 
+ * In Python, float values are printed in scientific notation when their absolute value
+ * is ≥ 1e16 or < 1e-4. This differs from JavaScript/TypeScript's default behavior,
+ * so we explicitly enforce these formatting thresholds.
+ * 
+ * The logic here is based on Python's internal `format_float_short` implementation
+ * in CPython's `pystrtod.c`: 
+ * https://github.com/python/cpython/blob/main/Python/pystrtod.c
+ * 
+ * Special cases such as -0, Infinity, and NaN are also handled to ensure that 
+ * output matches Python’s display conventions.
+ */
 function toPythonFloat(num: number): string {
-    //num = Number(num);
-    //console.info(typeof(num));
     if (Object.is(num, -0)) {
         return "-0.0";
     }
@@ -1851,18 +1864,12 @@ export function str(args: Value[], source: string, command: ControlItem, context
 }
 
 export function input(args: Value[], source: string, command: ControlItem, context: Context): Value {
-    // TODO: 
-    // nodejs
-    // readline
-    // distinguish between browser and commandline
+    // TODO: : call conductor to receive user input
 }
 
 export function print(args: Value[], source: string, command: ControlItem, context: Context) {
-    // Convert each argument using toPythonString (an assumed helper function).
     const pieces = args.map(arg => toPythonString(arg));
-    // Join them with spaces.
     const output = pieces.join(' ');
-    // Actually print to console (you can replace this with any desired output).
     addPrint(output);
     //return { type: 'string', value: output };
 }
