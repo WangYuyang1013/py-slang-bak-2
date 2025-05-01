@@ -211,32 +211,32 @@ const options: IOptions = {
 
 // }
 
-if (require.main === module) {
-    (async () => {
-      if (process.argv.length < 3) {
-        console.error("Usage: npm run start:dev -- <python-file>");
-        process.exit(1);
-      }
+// if (require.main === module) {
+//     (async () => {
+//       if (process.argv.length < 3) {
+//         console.error("Usage: npm run start:dev -- <python-file>");
+//         process.exit(1);
+//       }
   
-      const filePath = process.argv[2];
+//       const filePath = process.argv[2];
   
-      try {
-        //await loadModulesFromServer(context, "http://localhost:8022");
+//       try {
+//         //await loadModulesFromServer(context, "http://localhost:8022");
 
-        const code = fs.readFileSync(filePath, "utf8") + "\n";
-        console.log(`Parsing Python file: ${filePath}`);
+//         const code = fs.readFileSync(filePath, "utf8") + "\n";
+//         console.log(`Parsing Python file: ${filePath}`);
   
-        const result = await runInContext(code, context, options);
-        console.info(result);
-        console.info((result as Finished).value);
-        console.info((result as Finished).representation.toString((result as Finished).value));
+//         const result = await runInContext(code, context, options);
+//         console.info(result);
+//         console.info((result as Finished).value);
+//         console.info((result as Finished).representation.toString((result as Finished).value));
   
-      } catch (e) {
-        console.error("Error:", e);
-      }
+//       } catch (e) {
+//         console.error("Error:", e);
+//       }
 
-    })();
-}
+//     })();
+// }
 
-// const {runnerPlugin, conduit} = initialise(PyEvaluator);
+const {runnerPlugin, conduit} = initialise(PyEvaluator);
 
