@@ -21768,7 +21768,7 @@
         const yVal = toNumber(args[1], source, command, context);
         // Divisor cannot be zero
         if (yVal === 0) {
-            handleRuntimeError(context, new ZeroDivisionError(source, command, context));
+            handleRuntimeError(context, new ValueError(source, command, context, "math_fmod"));
         }
         // JavaScript's % operator behaves similarly to C's fmod
         // in that the sign of the result is the same as the sign of x.
@@ -21824,7 +21824,7 @@
             return;
         }
         if (yValue === 0) {
-            handleRuntimeError(context, new ZeroDivisionError(source, command, context));
+            handleRuntimeError(context, new ValueError(source, command, context, "math_remainder"));
         }
         const quotient = xValue / yValue;
         const n = roundToEven(quotient);

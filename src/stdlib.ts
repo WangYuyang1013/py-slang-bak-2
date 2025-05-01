@@ -952,8 +952,7 @@ export function math_fmod(args: Value[], source: string, command: ControlItem, c
 
     // Divisor cannot be zero
     if (yVal === 0) {
-        handleRuntimeError(context, new ZeroDivisionError(source, command as es.Node, context));
-        
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_fmod"));
     }
 
     // JavaScript's % operator behaves similarly to C's fmod
@@ -1010,7 +1009,7 @@ export function math_remainder(args: Value[], source: string, command: ControlIt
     }
 
     if (yValue === 0) {
-        handleRuntimeError(context, new ZeroDivisionError(source, command as es.Node, context));
+        handleRuntimeError(context, new ValueError(source, command as es.Node, context, "math_remainder"));
     }
 
     const quotient = xValue / yValue;
