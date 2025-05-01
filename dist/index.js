@@ -19851,34 +19851,6 @@
         }
     }
 
-    // export function evaluateBinaryExpression(operator: BinaryOperator, left: any, right: any) {
-    //     switch (operator) {
-    //       case '+':
-    //         return left + right
-    //       case '-':
-    //         return left - right
-    //       case '*':
-    //         return left * right
-    //       case '/':
-    //         return left / right
-    //       case '%':
-    //         return left % right
-    //       case '===':
-    //         return left === right
-    //       case '!==':
-    //         return left !== right
-    //       case '<=':
-    //         return left <= right
-    //       case '<':
-    //         return left < right
-    //       case '>':
-    //         return left > right
-    //       case '>=':
-    //         return left >= right
-    //       default:
-    //         return undefined
-    //     }
-    //   }
     function evaluateUnaryExpression(operator, value) {
         if (operator === '!') {
             if (value.type === 'bool') {
@@ -20166,6 +20138,41 @@
             };
         }
     }
+    /**
+     * TEMPORARY IMPLEMENTATION
+     * This function is a simplified comparison between int and float
+     * to mimic Python-like ordering semantics.
+     *
+     * TODO: In future, replace this with proper method dispatch to
+     * __eq__, __lt__, __gt__, etc., according to Python's object model.
+     *
+     * pyCompare: Compares a Python-style big integer (int_num) with a float (float_num),
+     * returning -1, 0, or 1 for less-than, equal, or greater-than.
+     *
+     * This logic follows CPython's approach in floatobject.c, ensuring Python-like semantics:
+     *
+     * 1. Special Values:
+     *    - If float_num is inf, any finite int_num is smaller (returns -1).
+     *    - If float_num is -inf, any finite int_num is larger (returns 1).
+     *
+     * 2. Compare by Sign:
+     *    - Determine each number’s sign (negative, zero, or positive). If they differ, return based on sign.
+     *    - If both are zero, treat them as equal.
+     *
+     * 3. Safe Conversion:
+     *    - If |int_num| <= 2^53, safely convert it to a double and do a normal floating comparison.
+     *
+     * 4. Handling Large Integers:
+     *    - For int_num beyond 2^53, approximate the magnitudes via exponent/bit length.
+     *    - Compare the integer’s digit count with float_num’s order of magnitude.
+     *
+     * 5. Close Cases:
+     *    - If both integer and float have the same digit count, convert float_num to a “big-int-like” string
+     *      (approximateBigIntString) and compare lexicographically to int_num’s string.
+     *
+     * By layering sign checks, safe numeric range checks, and approximate comparisons,
+     * we achieve a Python-like ordering of large integers vs floats.
+     */
     function pyCompare(int_num, float_num) {
         // int_num.value < float_num.value => -1
         // int_num.value = float_num.value => 0
@@ -20200,8 +20207,8 @@
                 return 0;
             return diff < 0 ? -1 : 1;
         }
-        // For large integers exceeding 2^53, we need to distinguish more carefully.
-        // General idea: Determine the order of magnitude of float_num.value (via log10) and compare it with
+        // For large integers exceeding 2^53, need to distinguish more carefully.
+        // Determine the order of magnitude of float_num.value (via log10) and compare it with
         // the number of digits of int_num.value. An approximate comparison can indicate whether
         // int_num.value is greater or less than float_num.value.
         // First, check if float_num.value is nearly zero (but not zero).
@@ -20212,7 +20219,6 @@
         const absFlt = Math.abs(float_num.value);
         // Determine the order of magnitude.
         const exponent = Math.floor(Math.log10(absFlt));
-        // For example, if float_num.value = 3.333333e49, exponent = 49, indicating roughly 50 digits in its integer part.
         // Get the decimal string representation of the absolute integer.
         const intStr = absInt.toString();
         const intDigits = intStr.length;
@@ -20231,7 +20237,7 @@
             return (signInt > 0) ? -1 : 1;
         }
         else {
-            // (5.2) If the number of digits is the same, they may be extremely close.
+            // If the number of digits is the same, they may be extremely close.
             // Method: Convert float_num.value into an approximate BigInt string and perform a lexicographical comparison.
             const floatApproxStr = approximateBigIntString(absFlt, 30);
             const aTrim = intStr.replace(/^0+/, '');
@@ -21054,7 +21060,7 @@
         }
         // base should be in between 2 and 36
         if (base < 2 || base > 36) {
-            throw new Error(`_int_from_string: base must be in [2..36], got ${base}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "_int_from_string"));
         }
         let str = strVal.value;
         str = str.trim();
@@ -21071,7 +21077,7 @@
         // The remaining portion must consist of valid characters for the specified base.
         const parsedNumber = parseInt(str, base);
         if (isNaN(parsedNumber)) {
-            throw new Error(`_int_from_string: cannot parse "${strVal.value}" with base ${base}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "_int_from_string"));
         }
         const result = sign * BigInt(parsedNumber);
         return { type: 'bigint', value: result };
@@ -21142,11 +21148,11 @@
                     expectedType = 'NoneType';
                     break;
                 default:
-                    throw new Error(`isinstance: unknown type '${classinfo.value}'`);
+                    handleRuntimeError(context, new ValueError(source, command, context, "isinstance"));
+                    return;
             }
         }
         else {
-            // TODO: If the value is not in string format, additional handling can be added as needed.
             handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "string"));
             return;
         }
@@ -21172,7 +21178,7 @@
             num = Number(x.value);
         }
         if (num < -1 || num > 1) {
-            throw new Error(`math_acos: argument must be in the interval [-1, 1], but got ${num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_acos"));
         }
         const result = Math.acos(num);
         return { type: 'number', value: result };
@@ -21196,7 +21202,7 @@
             num = Number(x.value);
         }
         if (num < 1) {
-            throw new Error(`math_acosh: argument must be greater than or equal to 1, but got ${num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_acosh"));
         }
         const result = Math.acosh(num);
         return { type: 'number', value: result };
@@ -21220,7 +21226,7 @@
             num = Number(x.value);
         }
         if (num < -1 || num > 1) {
-            throw new Error(`math_asin: argument must be in the interval [-1, 1], but got ${num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_asin"));
         }
         const result = Math.asin(num);
         return { type: 'number', value: result };
@@ -21317,7 +21323,7 @@
             num = Number(x.value);
         }
         if (num <= -1 || num >= 1) {
-            throw new Error(`math_atanh: argument must be in the interval (-1, 1), but got ${num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_atanh"));
         }
         const result = Math.atanh(num);
         return { type: 'number', value: result };
@@ -21456,7 +21462,7 @@
         const nVal = BigInt(n.value);
         const kVal = BigInt(k.value);
         if (nVal < 0 || kVal < 0) {
-            throw new Error(`comb: n and k must be non-negative, got n=${nVal}, k=${kVal}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_comb"));
         }
         if (kVal > nVal) {
             return { type: 'bigint', value: BigInt(0) };
@@ -21481,7 +21487,7 @@
         }
         const nVal = BigInt(n.value);
         if (nVal < 0) {
-            throw new Error(`factorial: argument must be non-negative, but got ${nVal}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_factorial"));
         }
         // 0! = 1
         if (nVal === BigInt(0)) {
@@ -21613,7 +21619,7 @@
             }
         }
         if (n < 0 || k < 0) {
-            throw new Error(`perm: n and k must be non-negative, got n=${n}, k=${k}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_perm"));
         }
         if (k > n) {
             return { type: 'bigint', value: BigInt(0) };
@@ -21762,7 +21768,7 @@
         const yVal = toNumber(args[1], source, command, context);
         // Divisor cannot be zero
         if (yVal === 0) {
-            throw new Error("fmod: divisor (y) must not be zero");
+            handleRuntimeError(context, new ZeroDivisionError(source, command, context));
         }
         // JavaScript's % operator behaves similarly to C's fmod
         // in that the sign of the result is the same as the sign of x.
@@ -21818,7 +21824,7 @@
             return;
         }
         if (yValue === 0) {
-            throw new Error(`remainder: divisor y must not be zero`);
+            handleRuntimeError(context, new ZeroDivisionError(source, command, context));
         }
         const quotient = xValue / yValue;
         const n = roundToEven(quotient);
@@ -22089,7 +22095,7 @@
             num = Number(x.value);
         }
         if (num <= 0) {
-            throw new Error(`math_log: argument must be positive, but got ${num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_log"));
         }
         if (args.length === 1) {
             return { type: 'number', value: Math.log(num) };
@@ -22106,7 +22112,7 @@
             baseNum = Number(baseArg.value);
         }
         if (baseNum <= 0) {
-            throw new Error(`math_log: base must be positive, but got ${baseNum}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_log"));
         }
         const result = Math.log(num) / Math.log(baseNum);
         return { type: 'number', value: result };
@@ -22130,7 +22136,7 @@
             num = Number(x.value);
         }
         if (num <= 0) {
-            throw new Error(`math_log10: argument must be positive, but got ${num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_log10"));
         }
         const result = Math.log10(num);
         return { type: 'number', value: result };
@@ -22154,7 +22160,7 @@
             num = Number(x.value);
         }
         if (1 + num <= 0) {
-            throw new Error(`math_log1p: 1 + argument must be positive, but got 1 + ${num} = ${1 + num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_log1p"));
         }
         const result = Math.log1p(num);
         return { type: 'number', value: result };
@@ -22178,7 +22184,7 @@
             num = Number(x.value);
         }
         if (num <= 0) {
-            throw new Error(`math_log2: argument must be positive, but got ${num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_log2"));
         }
         const result = Math.log2(num);
         return { type: 'number', value: result };
@@ -22202,7 +22208,7 @@
         if (base.type === 'number') {
             baseNum = base.value;
         }
-        else { // 'bigint'
+        else {
             baseNum = Number(base.value);
         }
         let expNum;
@@ -22339,7 +22345,7 @@
             num = Number(x.value);
         }
         if (num < 0) {
-            throw new Error(`math_sqrt: argument must be non-negative, but got ${num}`);
+            handleRuntimeError(context, new ValueError(source, command, context, "math_sqrt"));
         }
         const result = Math.sqrt(num);
         return { type: 'number', value: result };
@@ -22404,6 +22410,7 @@
             }
         }
         else {
+            // Won't happen
             throw new Error(`max: unsupported type ${firstType}`);
         }
         return args[maxIndex];
@@ -22468,6 +22475,7 @@
             }
         }
         else {
+            // Won't happen
             throw new Error(`min: unsupported type ${firstType}`);
         }
         return args[maxIndex];
@@ -22526,9 +22534,21 @@
         const currentTime = Date.now();
         return { type: 'number', value: currentTime };
     }
+    /**
+     * Converts a number to a string that mimics Python's float formatting behavior.
+     *
+     * In Python, float values are printed in scientific notation when their absolute value
+     * is ≥ 1e16 or < 1e-4. This differs from JavaScript/TypeScript's default behavior,
+     * so we explicitly enforce these formatting thresholds.
+     *
+     * The logic here is based on Python's internal `format_float_short` implementation
+     * in CPython's `pystrtod.c`:
+     * https://github.com/python/cpython/blob/main/Python/pystrtod.c
+     *
+     * Special cases such as -0, Infinity, and NaN are also handled to ensure that
+     * output matches Python’s display conventions.
+     */
     function toPythonFloat(num) {
-        //num = Number(num);
-        //console.info(typeof(num));
         if (Object.is(num, -0)) {
             return "-0.0";
         }
@@ -22595,17 +22615,11 @@
         return { type: 'string', value: result };
     }
     function input(args, source, command, context) {
-        // TODO: 
-        // nodejs
-        // readline
-        // distinguish between browser and commandline
+        // TODO: : call conductor to receive user input
     }
     function print(args, source, command, context) {
-        // Convert each argument using toPythonString (an assumed helper function).
         const pieces = args.map(arg => toPythonString(arg));
-        // Join them with spaces.
         const output = pieces.join(' ');
-        // Actually print to console (you can replace this with any desired output).
         addPrint(output);
         //return { type: 'string', value: output };
     }
@@ -25470,17 +25484,11 @@ You called ${this.functionName}() without providing the required positional argu
         }
         visitComplexExpr(expr) {
             return {
-                // 你可以复用 "Literal"，也可以用别的 type 标记
-                // 这里保持和 BigInt 的风格一致
                 type: 'Literal',
-                // 和 visitBigIntLiteralExpr 类似，这里用一个字段来保存复数内容
-                // 比如把它叫做 "complex"
-                // expr.value 是一个 PyComplexNumber, 你可以用 toString(), 或者直接存 real/imag
                 complex: {
                     real: expr.value.real,
                     imag: expr.value.imag
                 },
-                // 和其它 literal 一样，加上位置信息
                 loc: this.toEstreeLocation(expr),
             };
         }
