@@ -1,8 +1,8 @@
-PWD /Users/wangdahai/Downloads/py-slang-main/docs/python/specs
+PWD /Users/wangdahai/Downloads/py-slang-bak/docs/python/specs
 INPUT /usr/local/texlive/2024/texmf.cnf
 INPUT /usr/local/texlive/2024/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/wangdahai/Downloads/py-slang-main/docs/python/specs/source_1.tex
+INPUT /Users/wangdahai/Downloads/py-slang-bak/docs/python/specs/source_1.tex
 OUTPUT source_1.log
 INPUT source_header.tex
 INPUT /usr/local/texlive/2024/texmf-dist/tex/latex/base/article.cls
@@ -316,6 +316,8 @@ INPUT source_strings.tex
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
 INPUT source_typing.tex
+INPUT source_standard.tex
+INPUT source_py_differences.tex
 INPUT source_1.aux
 INPUT ./source_1.out
 INPUT ./source_1.out
