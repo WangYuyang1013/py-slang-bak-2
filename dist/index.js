@@ -21,44 +21,13 @@
     /* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
 
-    function __esDecorate(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-        function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
-        var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-        var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-        var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-        var _, done = false;
-        for (var i = decorators.length - 1; i >= 0; i--) {
-            var context = {};
-            for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-            for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-            context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
-            var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-            if (kind === "accessor") {
-                if (result === void 0) continue;
-                if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-                if (_ = accept(result.get)) descriptor.get = _;
-                if (_ = accept(result.set)) descriptor.set = _;
-                if (_ = accept(result.init)) initializers.unshift(_);
-            }
-            else if (_ = accept(result)) {
-                if (kind === "field") initializers.unshift(_);
-                else descriptor[key] = _;
-            }
-        }
-        if (target) Object.defineProperty(target, contextIn.name, descriptor);
-        done = true;
+    function __decorate(decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
     }
-    function __runInitializers(thisArg, initializers, value) {
-        var useValue = arguments.length > 2;
-        for (var i = 0; i < initializers.length; i++) {
-            value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-        }
-        return useValue ? value : void 0;
-    }
-    function __setFunctionName(f, name, prefix) {
-        if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
-        return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
-    }
+
     function __awaiter(thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
@@ -7732,7 +7701,7 @@
      * x {number|string|bigint|Decimal}
      *
      */
-    function abs$2(x) {
+    function abs$1(x) {
       return new this(x).abs();
     }
 
@@ -8158,7 +8127,7 @@
       Decimal.clone = clone$1;
       Decimal.isDecimal = isDecimalInstance;
 
-      Decimal.abs = abs$2;
+      Decimal.abs = abs$1;
       Decimal.acos = acos;
       Decimal.acosh = acosh;        // ES6
       Decimal.add = add;
@@ -8180,13 +8149,13 @@
       Decimal.log = log;
       Decimal.log10 = log10;        // ES6
       Decimal.log2 = log2;          // ES6
-      Decimal.max = max$1;
-      Decimal.min = min$1;
+      Decimal.max = max;
+      Decimal.min = min;
       Decimal.mod = mod$1;
       Decimal.mul = mul;
       Decimal.pow = pow$1;
       Decimal.random = random;
-      Decimal.round = round$1;
+      Decimal.round = round;
       Decimal.sign = sign;          // ES6
       Decimal.sin = sin;
       Decimal.sinh = sinh$1;          // ES6
@@ -8348,7 +8317,7 @@
      * arguments {number|string|bigint|Decimal}
      *
      */
-    function max$1() {
+    function max() {
       return maxOrMin(this, arguments, -1);
     }
 
@@ -8359,7 +8328,7 @@
      * arguments {number|string|bigint|Decimal}
      *
      */
-    function min$1() {
+    function min() {
       return maxOrMin(this, arguments, 1);
     }
 
@@ -8516,7 +8485,7 @@
      * x {number|string|bigint|Decimal}
      *
      */
-    function round$1(x) {
+    function round(x) {
       return finalise(x = new this(x), x.e + 1, this.rounding);
     }
 
@@ -18770,7 +18739,7 @@
       DenseMatrix,
       Fraction
     });
-    var abs$1 = /* #__PURE__ */createAbs({
+    var abs = /* #__PURE__ */createAbs({
       typed
     });
     var addScalar = /* #__PURE__ */createAddScalar({
@@ -18872,7 +18841,7 @@
       unaryMinus
     });
     var inv = /* #__PURE__ */createInv({
-      abs: abs$1,
+      abs,
       addScalar,
       det,
       divideScalar,
@@ -20933,1606 +20902,1522 @@
         },
     };
 
-    // npm install mathjs
+    var builtInFuncs = [
+    	"_int",
+    	"_int_from_string",
+    	"abs",
+    	"error",
+    	"isinstance",
+    	"math_acos",
+    	"math_acosh",
+    	"math_asin",
+    	"math_asinh",
+    	"math_atan",
+    	"math_atan2",
+    	"math_atanh",
+    	"math_cos",
+    	"math_cosh",
+    	"math_degrees",
+    	"math_erf",
+    	"math_erfc",
+    	"char_at",
+    	"math_comb",
+    	"math_factorial",
+    	"math_gcd",
+    	"math_isqrt",
+    	"math_lcm",
+    	"math_perm",
+    	"math_ceil",
+    	"math_fabs",
+    	"math_floor",
+    	"math_fma",
+    	"math_fmod",
+    	"math_remainder",
+    	"math_trunc",
+    	"math_copysign",
+    	"math_isfinite",
+    	"math_isinf",
+    	"math_isnan",
+    	"math_ldexp",
+    	"math_nextafter",
+    	"math_ulp",
+    	"math_cbrt",
+    	"math_exp",
+    	"math_exp2",
+    	"math_expm1",
+    	"math_gamma",
+    	"math_lgamma",
+    	"math_log",
+    	"math_log10",
+    	"math_log1p",
+    	"math_log2",
+    	"math_pow",
+    	"math_radians",
+    	"math_sin",
+    	"math_sinh",
+    	"math_tan",
+    	"math_tanh",
+    	"math_sqrt",
+    	"max",
+    	"min",
+    	"random_random",
+    	"round",
+    	"time_time",
+    	"str",
+    	"print",
+    	"input"
+    ];
+    var constants$1 = [
+    	"math_e",
+    	"math_inf",
+    	"math_nan",
+    	"math_pi",
+    	"math_tau"
+    ];
+    var py_s1_constants = {
+    	builtInFuncs: builtInFuncs,
+    	constants: constants$1
+    };
+
+    function Validate(minArgs, maxArgs, functionName, strict) {
+        return function (target, propertyKey, descriptor) {
+            const originalMethod = descriptor.value;
+            descriptor.value = function (args, source, command, context) {
+                if (minArgs !== null && args.length < minArgs) {
+                    throw new MissingRequiredPositionalError(source, command, functionName, minArgs, args, strict);
+                }
+                if (maxArgs !== null && args.length > maxArgs) {
+                    throw new TooManyPositionalArgumentsError(source, command, functionName, maxArgs, args, strict);
+                }
+                return originalMethod.call(this, args, source, command, context);
+            };
+        };
+    }
+    class BuiltInFunctions {
+        static _int(args, source, command, context) {
+            if (args.length === 0) {
+                return { type: 'bigint', value: '0' };
+            }
+            const arg = args[0];
+            // If the value is a number, use Math.trunc to truncate toward zero.
+            if (arg.type === 'number') {
+                const truncated = Math.trunc(arg.value);
+                return { type: 'bigint', value: BigInt(truncated) };
+            }
+            // If the value is a bigint, simply return the same value.
+            if (arg.type === 'bigint') {
+                return { type: 'bigint', value: arg.value };
+            }
+            handleRuntimeError(context, new TypeError$1(source, command, context, arg.type, "float' or 'int"));
+        }
+        static _int_from_string(args, source, command, context) {
+            const strVal = args[0];
+            if (strVal.type !== 'string') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "string"));
+            }
+            let base = 10;
+            if (args.length === 2) {
+                // The second argument must be either a bigint or a number (it will be converted to a number for uniform processing).
+                const baseVal = args[1];
+                if (baseVal.type === 'bigint') {
+                    base = Number(baseVal.value);
+                }
+                else {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, args[1].type, "float' or 'int"));
+                }
+            }
+            // base should be in between 2 and 36
+            if (base < 2 || base > 36) {
+                handleRuntimeError(context, new ValueError(source, command, context, "_int_from_string"));
+            }
+            let str = strVal.value;
+            str = str.trim();
+            str = str.replace(/_/g, '');
+            // Parse the sign (determine if the value is positive or negative)
+            let sign = BigInt(1);
+            if (str.startsWith('+')) {
+                str = str.slice(1);
+            }
+            else if (str.startsWith('-')) {
+                sign = BigInt(-1);
+                str = str.slice(1);
+            }
+            // The remaining portion must consist of valid characters for the specified base.
+            const parsedNumber = parseInt(str, base);
+            if (isNaN(parsedNumber)) {
+                handleRuntimeError(context, new ValueError(source, command, context, "_int_from_string"));
+            }
+            const result = sign * BigInt(parsedNumber);
+            return { type: 'bigint', value: result };
+        }
+        static abs(args, source, command, context) {
+            const x = args[0];
+            switch (x.type) {
+                case 'bigint': {
+                    const intVal = x.value;
+                    const result = intVal < 0 ? -intVal : intVal;
+                    return { type: 'int', value: result };
+                }
+                case 'number': {
+                    return { type: 'number', value: Math.abs(x.value) };
+                }
+                case 'complex': {
+                    // Calculate the modulus (absolute value) of a complex number.
+                    const real = x.value.real;
+                    const imag = x.value.imag;
+                    const modulus = Math.sqrt(real * real + imag * imag);
+                    return { type: 'number', value: modulus };
+                }
+                default:
+                    handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "float', 'int' or 'complex"));
+            }
+        }
+        static toStr(val) {
+            return String(val.value);
+        }
+        static error(args, source, command, context) {
+            const output = "Error: " + args.map(arg => BuiltInFunctions.toStr(arg)).join(' ') + '\n';
+            throw new Error(output);
+        }
+        static isinstance(args, source, command, context) {
+            const obj = args[0];
+            const classinfo = args[1];
+            let expectedType;
+            if (classinfo.type === 'string') {
+                switch (classinfo.value) {
+                    case 'int':
+                        expectedType = 'bigint';
+                        if (obj.type === 'bool') {
+                            handleRuntimeError(context, new SublanguageError(source, command, context, 'isinstance', '1', 'Python §1 does not treat bool as a subtype of int'));
+                        }
+                        break;
+                    case 'float':
+                        expectedType = 'number';
+                        break;
+                    case 'string':
+                        expectedType = 'string';
+                        break;
+                    case 'bool':
+                        expectedType = 'bool';
+                        break;
+                    case 'complex':
+                        expectedType = 'complex';
+                        break;
+                    case 'NoneType':
+                        expectedType = 'NoneType';
+                        break;
+                    default:
+                        handleRuntimeError(context, new ValueError(source, command, context, "isinstance"));
+                        return;
+                }
+            }
+            else {
+                handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "string"));
+                return;
+            }
+            const result = obj.type === expectedType;
+            return { type: 'bool', value: result };
+        }
+        static math_acos(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (num < -1 || num > 1) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_acos"));
+            }
+            const result = Math.acos(num);
+            return { type: 'number', value: result };
+        }
+        static math_acosh(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (num < 1) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_acosh"));
+            }
+            const result = Math.acosh(num);
+            return { type: 'number', value: result };
+        }
+        static math_asin(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (num < -1 || num > 1) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_asin"));
+            }
+            const result = Math.asin(num);
+            return { type: 'number', value: result };
+        }
+        static math_asinh(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.asinh(num);
+            return { type: 'number', value: result };
+        }
+        static math_atan(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.atan(num);
+            return { type: 'number', value: result };
+        }
+        static math_atan2(args, source, command, context) {
+            const y = args[0];
+            const x = args[1];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            else if (y.type !== 'number' && y.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, y.type, "float' or 'int"));
+            }
+            let yNum, xNum;
+            if (y.type === 'number') {
+                yNum = y.value;
+            }
+            else {
+                yNum = Number(y.value);
+            }
+            if (x.type === 'number') {
+                xNum = x.value;
+            }
+            else {
+                xNum = Number(x.value);
+            }
+            const result = Math.atan2(yNum, xNum);
+            return { type: 'number', value: result };
+        }
+        static math_atanh(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (num <= -1 || num >= 1) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_atanh"));
+            }
+            const result = Math.atanh(num);
+            return { type: 'number', value: result };
+        }
+        static math_cos(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.cos(num);
+            return { type: 'number', value: result };
+        }
+        static math_cosh(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.cosh(num);
+            return { type: 'number', value: result };
+        }
+        static math_degrees(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = num * 180 / Math.PI;
+            return { type: 'number', value: result };
+        }
+        static math_erf(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const erfnum = erf(num);
+            return { type: 'number', value: erfnum };
+        }
+        static math_erfc(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            const erfc = 1 - BuiltInFunctions.math_erf(args[0], source, command, context).value;
+            return { type: 'number', value: erfc };
+        }
+        static char_at(args, source, command, context) {
+            const s = args[0];
+            const i = args[1];
+            if (s.type !== 'string') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, s.type, "string"));
+            }
+            if (i.type !== 'number' && i.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, i.type, "float' or 'int"));
+            }
+            const index = i.value;
+            return { type: 'string', value: (s.value)[index] };
+        }
+        static math_comb(args, source, command, context) {
+            const n = args[0];
+            const k = args[1];
+            if (n.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, n.type, "int"));
+            }
+            else if (k.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, k.type, "int"));
+            }
+            const nVal = BigInt(n.value);
+            const kVal = BigInt(k.value);
+            if (nVal < 0 || kVal < 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_comb"));
+            }
+            if (kVal > nVal) {
+                return { type: 'bigint', value: BigInt(0) };
+            }
+            let result = BigInt(1);
+            let kk = kVal > nVal - kVal ? nVal - kVal : kVal;
+            for (let i = BigInt(0); i < kk; i++) {
+                result = result * (nVal - i) / (i + BigInt(1));
+            }
+            return { type: 'bigint', value: result };
+        }
+        static math_factorial(args, source, command, context) {
+            const n = args[0];
+            if (n.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, n.type, "int"));
+            }
+            const nVal = BigInt(n.value);
+            if (nVal < 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_factorial"));
+            }
+            // 0! = 1
+            if (nVal === BigInt(0)) {
+                return { type: 'bigint', value: BigInt(1) };
+            }
+            let result = BigInt(1);
+            for (let i = BigInt(1); i <= nVal; i++) {
+                result *= i;
+            }
+            return { type: 'bigint', value: result };
+        }
+        static math_gcd(args, source, command, context) {
+            if (args.length === 0) {
+                return { type: 'bigint', value: BigInt(0) };
+            }
+            const values = args.map((v, idx) => {
+                if (v.type !== 'bigint') {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, v.type, "int"));
+                }
+                return BigInt(v.value);
+            });
+            const allZero = values.every(val => val === BigInt(0));
+            if (allZero) {
+                return { type: 'bigint', value: BigInt(0) };
+            }
+            let currentGcd = values[0] < 0 ? -values[0] : values[0];
+            for (let i = 1; i < values.length; i++) {
+                currentGcd = BuiltInFunctions.gcdOfTwo(currentGcd, values[i] < 0 ? -values[i] : values[i]);
+                if (currentGcd === BigInt(1)) {
+                    break;
+                }
+            }
+            return { type: 'bigint', value: currentGcd };
+        }
+        static gcdOfTwo(a, b) {
+            let x = a;
+            let y = b;
+            while (y !== BigInt(0)) {
+                const temp = x % y;
+                x = y;
+                y = temp;
+            }
+            return x < 0 ? -x : x;
+        }
+        static math_isqrt(args, source, command, context) {
+            const nValObj = args[0];
+            if (nValObj.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, nValObj.type, "int"));
+            }
+            const n = nValObj.value;
+            if (n < 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_isqrt"));
+            }
+            if (n < 2) {
+                return { type: 'bigint', value: n };
+            }
+            let low = BigInt(1);
+            let high = n;
+            while (low < high) {
+                const mid = (low + high + BigInt(1)) >> BigInt(1);
+                const sq = mid * mid;
+                if (sq <= n) {
+                    low = mid;
+                }
+                else {
+                    high = mid - BigInt(1);
+                }
+            }
+            return { type: 'bigint', value: low };
+        }
+        static math_lcm(args, source, command, context) {
+            if (args.length === 0) {
+                return { type: 'bigint', value: BigInt(1) };
+            }
+            const values = args.map((val, idx) => {
+                if (val.type !== 'bigint') {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, val.type, "int"));
+                }
+                return BigInt(val.value);
+            });
+            if (values.some(v => v === BigInt(0))) {
+                return { type: 'bigint', value: BigInt(0) };
+            }
+            let currentLcm = BuiltInFunctions.absBigInt(values[0]);
+            for (let i = 1; i < values.length; i++) {
+                currentLcm = BuiltInFunctions.lcmOfTwo(currentLcm, BuiltInFunctions.absBigInt(values[i]));
+                if (currentLcm === BigInt(0)) {
+                    break;
+                }
+            }
+            return { type: 'bigint', value: currentLcm };
+        }
+        static lcmOfTwo(a, b) {
+            const gcdVal = BuiltInFunctions.gcdOfTwo(a, b);
+            return BigInt((a / gcdVal) * b);
+        }
+        static absBigInt(x) {
+            return x < 0 ? -x : x;
+        }
+        static math_perm(args, source, command, context) {
+            const nValObj = args[0];
+            if (nValObj.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, nValObj.type, "int"));
+            }
+            const n = BigInt(nValObj.value);
+            let k = n;
+            if (args.length === 2) {
+                const kValObj = args[1];
+                if (kValObj.type === 'null' || kValObj.type === 'undefined') {
+                    k = n;
+                }
+                else if (kValObj.type === 'bigint') {
+                    k = BigInt(kValObj.value);
+                }
+                else {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, kValObj.type, "int' or 'None"));
+                }
+            }
+            if (n < 0 || k < 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_perm"));
+            }
+            if (k > n) {
+                return { type: 'bigint', value: BigInt(0) };
+            }
+            let result = BigInt(1);
+            for (let i = BigInt(0); i < k; i++) {
+                result *= (n - i);
+            }
+            return { type: 'bigint', value: result };
+        }
+        static math_ceil(args, source, command, context) {
+            const x = args[0];
+            if (x.type === 'bigint') {
+                return x;
+            }
+            if (x.type === 'number') {
+                const numVal = x.value;
+                if (typeof numVal !== 'number') {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+                }
+                const ceiled = BigInt(Math.ceil(numVal));
+                return { type: 'bigint', value: ceiled };
+            }
+            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+        }
+        static math_fabs(args, source, command, context) {
+            const x = args[0];
+            if (x.type === 'bigint') {
+                const bigVal = BigInt(x.value);
+                const absVal = bigVal < 0 ? -Number(bigVal) : Number(bigVal);
+                return { type: 'number', value: absVal };
+            }
+            if (x.type === 'number') {
+                const numVal = x.value;
+                if (typeof numVal !== 'number') {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+                }
+                const absVal = Math.abs(numVal);
+                return { type: 'number', value: absVal };
+            }
+            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+        }
+        static math_floor(args, source, command, context) {
+            const x = args[0];
+            if (x.type === 'bigint') {
+                return x;
+            }
+            if (x.type === 'number') {
+                const numVal = x.value;
+                if (typeof numVal !== 'number') {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+                }
+                const floored = BigInt(Math.floor(numVal));
+                return { type: 'bigint', value: floored };
+            }
+            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+        }
+        // Computes the product of a and b along with the rounding error using Dekker's algorithm.
+        static twoProd(a, b) {
+            const prod = a * b;
+            const c = 134217729; // 2^27 + 1
+            const a_hi = (a * c) - ((a * c) - a);
+            const a_lo = a - a_hi;
+            const b_hi = (b * c) - ((b * c) - b);
+            const b_lo = b - b_hi;
+            const err = a_lo * b_lo - (((prod - a_hi * b_hi) - a_lo * b_hi) - a_hi * b_lo);
+            return { prod, err };
+        }
+        // Computes the sum of a and b along with the rounding error using Fast TwoSum.
+        static twoSum(a, b) {
+            const sum = a + b;
+            const v = sum - a;
+            const err = (a - (sum - v)) + (b - v);
+            return { sum, err };
+        }
+        // Performs a fused multiply-add operation: computes (x * y) + z with a single rounding.
+        static fusedMultiplyAdd(x, y, z) {
+            const { prod, err: prodErr } = BuiltInFunctions.twoProd(x, y);
+            const { sum, err: sumErr } = BuiltInFunctions.twoSum(prod, z);
+            const result = sum + (prodErr + sumErr);
+            return result;
+        }
+        static toNumber(val, source, command, context) {
+            if (val.type === 'bigint') {
+                return Number(val.value);
+            }
+            else if (val.type === 'number') {
+                return val.value;
+            }
+            else {
+                handleRuntimeError(context, new TypeError$1(source, command, context, val.type, "float' or 'int"));
+                return 0;
+            }
+        }
+        static math_fma(args, source, command, context) {
+            const xVal = BuiltInFunctions.toNumber(args[0], source, command, context);
+            const yVal = BuiltInFunctions.toNumber(args[1], source, command, context);
+            const zVal = BuiltInFunctions.toNumber(args[2], source, command, context);
+            // Special-case handling: According to the IEEE 754 standard, fma(0, inf, nan)
+            // and fma(inf, 0, nan) should return NaN.
+            if (isNaN(xVal) || isNaN(yVal) || isNaN(zVal)) {
+                return { type: 'number', value: NaN };
+            }
+            if (xVal === 0 && !isFinite(yVal) && isNaN(zVal)) {
+                return { type: 'number', value: NaN };
+            }
+            if (yVal === 0 && !isFinite(xVal) && isNaN(zVal)) {
+                return { type: 'number', value: NaN };
+            }
+            const result = BuiltInFunctions.fusedMultiplyAdd(xVal, yVal, zVal);
+            return { type: 'number', value: result };
+        }
+        static math_fmod(args, source, command, context) {
+            // Convert inputs to numbers
+            const xVal = BuiltInFunctions.toNumber(args[0], source, command, context);
+            const yVal = BuiltInFunctions.toNumber(args[1], source, command, context);
+            // Divisor cannot be zero
+            if (yVal === 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_fmod"));
+            }
+            // JavaScript's % operator behaves similarly to C's fmod
+            // in that the sign of the result is the same as the sign of x.
+            // For corner cases (NaN, Infinity), JavaScript remainder
+            // yields results consistent with typical C library fmod behavior.
+            const remainder = xVal % yVal;
+            return { type: 'number', value: remainder };
+        }
+        static roundToEven(num) {
+            const floorVal = Math.floor(num);
+            const ceilVal = Math.ceil(num);
+            const diffFloor = num - floorVal;
+            const diffCeil = ceilVal - num;
+            if (diffFloor < diffCeil) {
+                return floorVal;
+            }
+            else if (diffCeil < diffFloor) {
+                return ceilVal;
+            }
+            else {
+                return (floorVal % 2 === 0) ? floorVal : ceilVal;
+            }
+        }
+        static math_remainder(args, source, command, context) {
+            const x = args[0];
+            const y = args[1];
+            let xValue;
+            if (x.type === 'bigint') {
+                xValue = Number(x.value);
+            }
+            else if (x.type === 'number') {
+                xValue = x.value;
+            }
+            else {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+                return;
+            }
+            let yValue;
+            if (y.type === 'bigint') {
+                yValue = Number(y.value);
+            }
+            else if (y.type === 'number') {
+                yValue = y.value;
+            }
+            else {
+                handleRuntimeError(context, new TypeError$1(source, command, context, y.type, "float' or 'int"));
+                return;
+            }
+            if (yValue === 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_remainder"));
+            }
+            const quotient = xValue / yValue;
+            const n = BuiltInFunctions.roundToEven(quotient);
+            const remainder = xValue - n * yValue;
+            return { type: 'number', value: remainder };
+        }
+        static math_trunc(args, source, command, context) {
+            const x = args[0];
+            if (x.type === 'bigint') {
+                return x;
+            }
+            if (x.type === 'number') {
+                const numVal = x.value;
+                if (typeof numVal !== 'number') {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+                }
+                let truncated;
+                if (numVal === 0) {
+                    truncated = 0;
+                }
+                else if (numVal < 0) {
+                    truncated = Math.ceil(numVal);
+                }
+                else {
+                    truncated = Math.floor(numVal);
+                }
+                return { type: 'bigint', value: BigInt(truncated) };
+            }
+            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+        }
+        static math_copysign(args, source, command, context) {
+            const [x, y] = args;
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            else if (y.type !== 'number' && y.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, y.type, "float' or 'int"));
+            }
+            const xVal = Number(x.value);
+            const yVal = Number(y.value);
+            const absVal = Math.abs(xVal);
+            const isNegative = yVal < 0 || (Object.is(yVal, -0));
+            const result = isNegative ? -absVal : absVal;
+            return { type: 'number', value: Number(result) };
+        }
+        static math_isfinite(args, source, command, context) {
+            const xValObj = args[0];
+            if (xValObj.type !== 'number' && xValObj.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, xValObj.type, "float' or 'int"));
+            }
+            const x = Number(xValObj.value);
+            const result = Number.isFinite(x);
+            return { type: 'bool', value: result };
+        }
+        static math_isinf(args, source, command, context) {
+            const xValObj = args[0];
+            if (xValObj.type !== 'number' && xValObj.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, xValObj.type, "float' or 'int"));
+            }
+            const x = Number(xValObj.value);
+            const result = (x === Infinity || x === -Infinity);
+            return { type: 'bool', value: result };
+        }
+        static math_isnan(args, source, command, context) {
+            const xValObj = args[0];
+            if (xValObj.type !== 'number' && xValObj.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, xValObj.type, "float' or 'int"));
+            }
+            const x = Number(xValObj.value);
+            const result = Number.isNaN(x);
+            return { type: 'bool', value: result };
+        }
+        static math_ldexp(args, source, command, context) {
+            const xVal = BuiltInFunctions.toNumber(args[0], source, command, context);
+            if (args[1].type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, args[1].type, "int"));
+            }
+            const expVal = args[1].value;
+            // Perform x * 2^expVal
+            // In JavaScript, 2**expVal may overflow or underflow, yielding Infinity or 0 respectively.
+            // That behavior parallels typical C library rules for ldexp.
+            const result = xVal * Math.pow(2, Number(expVal));
+            return { type: 'number', value: result };
+        }
+        static math_nextafter(args, source, command, context) {
+            // TODO: Implement math_nextafter using proper bit-level manipulation and handling special cases (NaN, Infinity, steps, etc.)
+            throw new Error("math_nextafter not implemented");
+        }
+        static math_ulp(args, source, command, context) {
+            // TODO: Implement math_ulp to return the unit in the last place (ULP) of the given floating-point number.
+            throw new Error("math_ulp not implemented");
+        }
+        static math_cbrt(args, source, command, context) {
+            const xVal = args[0];
+            let x;
+            if (xVal.type !== 'number') {
+                if (xVal.type === 'bigint') {
+                    x = Number(xVal.value);
+                }
+                else {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, xVal.type, "float' or 'int"));
+                    return;
+                }
+            }
+            else {
+                x = xVal.value;
+            }
+            const result = Math.cbrt(x);
+            return { type: 'number', value: result };
+        }
+        static math_exp(args, source, command, context) {
+            const xVal = args[0];
+            let x;
+            if (xVal.type !== 'number') {
+                if (xVal.type === 'bigint') {
+                    x = Number(xVal.value);
+                }
+                else {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, xVal.type, "float' or 'int"));
+                    return;
+                }
+            }
+            else {
+                x = xVal.value;
+            }
+            const result = Math.exp(x);
+            return { type: 'number', value: result };
+        }
+        static math_exp2(args, source, command, context) {
+            const xVal = args[0];
+            let x;
+            if (xVal.type !== 'number') {
+                if (xVal.type === 'bigint') {
+                    x = Number(xVal.value);
+                }
+                else {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, xVal.type, "float' or 'int"));
+                    return;
+                }
+            }
+            else {
+                x = xVal.value;
+            }
+            const result = Math.pow(2, x);
+            return { type: 'number', value: result };
+        }
+        static math_expm1(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.expm1(num);
+            return { type: 'number', value: result };
+        }
+        static math_gamma(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            const z = BuiltInFunctions.toNumber(x, source, command, context);
+            const result = gamma(z);
+            return { type: 'number', value: result };
+        }
+        static math_lgamma(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            const z = BuiltInFunctions.toNumber(x, source, command, context);
+            const result = lgamma(z);
+            return { type: 'number', value: result };
+        }
+        static math_log(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (num <= 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_log"));
+            }
+            if (args.length === 1) {
+                return { type: 'number', value: Math.log(num) };
+            }
+            const baseArg = args[1];
+            if (baseArg.type !== 'number' && baseArg.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, baseArg.type, "float' or 'int"));
+            }
+            let baseNum;
+            if (baseArg.type === 'number') {
+                baseNum = baseArg.value;
+            }
+            else {
+                baseNum = Number(baseArg.value);
+            }
+            if (baseNum <= 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_log"));
+            }
+            const result = Math.log(num) / Math.log(baseNum);
+            return { type: 'number', value: result };
+        }
+        static math_log10(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (num <= 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_log10"));
+            }
+            const result = Math.log10(num);
+            return { type: 'number', value: result };
+        }
+        static math_log1p(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (1 + num <= 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_log1p"));
+            }
+            const result = Math.log1p(num);
+            return { type: 'number', value: result };
+        }
+        static math_log2(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (num <= 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_log2"));
+            }
+            const result = Math.log2(num);
+            return { type: 'number', value: result };
+        }
+        static math_pow(args, source, command, context) {
+            const base = args[0];
+            const exp = args[1];
+            if (base.type !== 'number' && base.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, base.type, "float' or 'int"));
+            }
+            else if (exp.type !== 'number' && exp.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, exp.type, "float' or 'int"));
+            }
+            let baseNum;
+            if (base.type === 'number') {
+                baseNum = base.value;
+            }
+            else {
+                baseNum = Number(base.value);
+            }
+            let expNum;
+            if (exp.type === 'number') {
+                expNum = exp.value;
+            }
+            else {
+                expNum = Number(exp.value);
+            }
+            const result = Math.pow(baseNum, expNum);
+            return { type: 'number', value: result };
+        }
+        static math_radians(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let deg;
+            if (x.type === 'number') {
+                deg = x.value;
+            }
+            else {
+                deg = Number(x.value);
+            }
+            const radians = deg * Math.PI / 180;
+            return { type: 'number', value: radians };
+        }
+        static math_sin(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.sin(num);
+            return { type: 'number', value: result };
+        }
+        static math_sinh(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.sinh(num);
+            return { type: 'number', value: result };
+        }
+        static math_tan(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.tan(num);
+            return { type: 'number', value: result };
+        }
+        static math_tanh(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            const result = Math.tanh(num);
+            return { type: 'number', value: result };
+        }
+        static math_sqrt(args, source, command, context) {
+            const x = args[0];
+            if (x.type !== 'number' && x.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
+            }
+            let num;
+            if (x.type === 'number') {
+                num = x.value;
+            }
+            else {
+                num = Number(x.value);
+            }
+            if (num < 0) {
+                handleRuntimeError(context, new ValueError(source, command, context, "math_sqrt"));
+            }
+            const result = Math.sqrt(num);
+            return { type: 'number', value: result };
+        }
+        static max(args, source, command, context) {
+            const numericTypes = ['bigint', 'number'];
+            const firstType = args[0].type;
+            let isNumeric = numericTypes.includes(firstType);
+            let isString = firstType === 'string';
+            for (let i = 1; i < args.length; i++) {
+                const t = args[i].type;
+                if (isNumeric && !numericTypes.includes(t)) {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, args[i].type, "float' or 'int"));
+                }
+                if (isString && t !== 'string') {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, args[i].type, "string"));
+                }
+            }
+            let useFloat = false;
+            if (isNumeric) {
+                for (const arg of args) {
+                    if (arg.type === 'number') {
+                        useFloat = true;
+                        break;
+                    }
+                }
+            }
+            let maxIndex = 0;
+            if (isNumeric) {
+                if (useFloat) {
+                    let maxVal = Number(args[0].value);
+                    for (let i = 1; i < args.length; i++) {
+                        const curr = Number(args[i].value);
+                        if (curr > maxVal) {
+                            maxVal = curr;
+                            maxIndex = i;
+                        }
+                    }
+                }
+                else {
+                    let maxVal = args[0].value;
+                    for (let i = 1; i < args.length; i++) {
+                        const curr = args[i].value;
+                        if (curr > maxVal) {
+                            maxVal = curr;
+                            maxIndex = i;
+                        }
+                    }
+                }
+            }
+            else if (isString) {
+                let maxVal = args[0].value;
+                for (let i = 1; i < args.length; i++) {
+                    const curr = args[i].value;
+                    if (curr > maxVal) {
+                        maxVal = curr;
+                        maxIndex = i;
+                    }
+                }
+            }
+            else {
+                // Won't happen
+                throw new Error(`max: unsupported type ${firstType}`);
+            }
+            return args[maxIndex];
+        }
+        static min(args, source, command, context) {
+            if (args.length < 2) {
+                handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'min', Number(2), args, true));
+            }
+            const numericTypes = ['bigint', 'number'];
+            const firstType = args[0].type;
+            let isNumeric = numericTypes.includes(firstType);
+            let isString = firstType === 'string';
+            for (let i = 1; i < args.length; i++) {
+                const t = args[i].type;
+                if (isNumeric && !numericTypes.includes(t)) {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, args[i].type, "float' or 'int"));
+                }
+                if (isString && t !== 'string') {
+                    handleRuntimeError(context, new TypeError$1(source, command, context, args[i].type, "string"));
+                }
+            }
+            let useFloat = false;
+            if (isNumeric) {
+                for (const arg of args) {
+                    if (arg.type === 'number') {
+                        useFloat = true;
+                        break;
+                    }
+                }
+            }
+            let maxIndex = 0;
+            if (isNumeric) {
+                if (useFloat) {
+                    let maxVal = Number(args[0].value);
+                    for (let i = 1; i < args.length; i++) {
+                        const curr = Number(args[i].value);
+                        if (curr < maxVal) {
+                            maxVal = curr;
+                            maxIndex = i;
+                        }
+                    }
+                }
+                else {
+                    let maxVal = args[0].value;
+                    for (let i = 1; i < args.length; i++) {
+                        const curr = args[i].value;
+                        if (curr < maxVal) {
+                            maxVal = curr;
+                            maxIndex = i;
+                        }
+                    }
+                }
+            }
+            else if (isString) {
+                let maxVal = args[0].value;
+                for (let i = 1; i < args.length; i++) {
+                    const curr = args[i].value;
+                    if (curr < maxVal) {
+                        maxVal = curr;
+                        maxIndex = i;
+                    }
+                }
+            }
+            else {
+                // Won't happen
+                throw new Error(`min: unsupported type ${firstType}`);
+            }
+            return args[maxIndex];
+        }
+        static random_random(args, source, command, context) {
+            const result = Math.random();
+            return { type: 'number', value: result };
+        }
+        static round(args, source, command, context) {
+            const numArg = args[0];
+            if (numArg.type !== 'number' && numArg.type !== 'bigint') {
+                handleRuntimeError(context, new TypeError$1(source, command, context, numArg.type, "float' or 'int"));
+            }
+            let ndigitsArg = { value: BigInt(0) };
+            if (args.length === 2 && args[1].type !== 'NoneType') {
+                ndigitsArg = args[1];
+            }
+            if (numArg.type === 'number') {
+                let numberValue = numArg.value;
+                if (ndigitsArg.value > 0) {
+                    const shifted = Number(numberValue.toFixed(Number(ndigitsArg.value)));
+                    return { type: 'number', value: shifted };
+                }
+                else if (ndigitsArg.value === BigInt(0)) {
+                    const shifted = Math.round(numArg.value);
+                    return { type: 'bigint', value: BigInt(shifted) };
+                }
+                else {
+                    const shifted = Math.round(numArg.value / (10 ** (-Number(ndigitsArg.value)))) * (10 ** (-Number(ndigitsArg.value)));
+                    return { type: 'number', value: shifted };
+                }
+            }
+            else {
+                if (ndigitsArg.value >= 0) {
+                    return numArg;
+                }
+                else {
+                    const shifted = numArg.value / (BigInt(10) ** (-ndigitsArg.value)) * (BigInt(10) ** (-ndigitsArg.value));
+                    return { type: 'bigint', value: shifted };
+                }
+            }
+        }
+        static time_time(args, source, command, context) {
+            const currentTime = Date.now();
+            return { type: 'number', value: currentTime };
+        }
+        static input(args, source, command, context) {
+            // TODO: : call conductor to receive user input
+        }
+        static print(args, source, command, context) {
+            const pieces = args.map(arg => toPythonString(arg));
+            const output = pieces.join(' ');
+            addPrint(output);
+            //return { type: 'string', value: output };
+        }
+        static str(args, source, command, context) {
+            if (args.length === 0) {
+                return { type: 'string', value: "" };
+            }
+            const obj = args[0];
+            const result = toPythonString(obj);
+            return { type: 'string', value: result };
+        }
+    }
+    __decorate([
+        Validate(null, 1, '_int', true)
+    ], BuiltInFunctions, "_int", null);
+    __decorate([
+        Validate(1, 2, '_int_from_string', true)
+    ], BuiltInFunctions, "_int_from_string", null);
+    __decorate([
+        Validate(1, 1, 'abs', false)
+    ], BuiltInFunctions, "abs", null);
+    __decorate([
+        Validate(2, 2, 'isinstance', false)
+    ], BuiltInFunctions, "isinstance", null);
+    __decorate([
+        Validate(1, 1, 'math_acos', false)
+    ], BuiltInFunctions, "math_acos", null);
+    __decorate([
+        Validate(1, 1, 'math_acosh', false)
+    ], BuiltInFunctions, "math_acosh", null);
+    __decorate([
+        Validate(1, 1, 'math_asin', false)
+    ], BuiltInFunctions, "math_asin", null);
+    __decorate([
+        Validate(1, 1, 'math_asinh', false)
+    ], BuiltInFunctions, "math_asinh", null);
+    __decorate([
+        Validate(1, 1, 'math_atan', false)
+    ], BuiltInFunctions, "math_atan", null);
+    __decorate([
+        Validate(2, 2, 'math_atan2', false)
+    ], BuiltInFunctions, "math_atan2", null);
+    __decorate([
+        Validate(1, 1, 'math_atanh', false)
+    ], BuiltInFunctions, "math_atanh", null);
+    __decorate([
+        Validate(1, 1, 'math_cos', false)
+    ], BuiltInFunctions, "math_cos", null);
+    __decorate([
+        Validate(1, 1, 'math_cosh', false)
+    ], BuiltInFunctions, "math_cosh", null);
+    __decorate([
+        Validate(1, 1, 'math_degrees', false)
+    ], BuiltInFunctions, "math_degrees", null);
+    __decorate([
+        Validate(1, 1, 'math_erf', false)
+    ], BuiltInFunctions, "math_erf", null);
+    __decorate([
+        Validate(1, 1, 'math_erfc', false)
+    ], BuiltInFunctions, "math_erfc", null);
+    __decorate([
+        Validate(2, 2, 'char_at', false)
+    ], BuiltInFunctions, "char_at", null);
+    __decorate([
+        Validate(2, 2, 'math_comb', false)
+    ], BuiltInFunctions, "math_comb", null);
+    __decorate([
+        Validate(1, 1, 'math_factorial', false)
+    ], BuiltInFunctions, "math_factorial", null);
+    __decorate([
+        Validate(1, 1, 'math_isqrt', false)
+    ], BuiltInFunctions, "math_isqrt", null);
+    __decorate([
+        Validate(1, 2, 'math_perm', true)
+    ], BuiltInFunctions, "math_perm", null);
+    __decorate([
+        Validate(1, 1, 'math_ceil', false)
+    ], BuiltInFunctions, "math_ceil", null);
+    __decorate([
+        Validate(1, 1, 'math_fabs', false)
+    ], BuiltInFunctions, "math_fabs", null);
+    __decorate([
+        Validate(1, 1, 'math_floor', false)
+    ], BuiltInFunctions, "math_floor", null);
+    __decorate([
+        Validate(3, 3, 'math_fma', false)
+    ], BuiltInFunctions, "math_fma", null);
+    __decorate([
+        Validate(2, 2, 'math_fmod', false)
+    ], BuiltInFunctions, "math_fmod", null);
+    __decorate([
+        Validate(2, 2, 'math_remainder', false)
+    ], BuiltInFunctions, "math_remainder", null);
+    __decorate([
+        Validate(1, 1, 'math_trunc', false)
+    ], BuiltInFunctions, "math_trunc", null);
+    __decorate([
+        Validate(2, 2, 'math_copysign', false)
+    ], BuiltInFunctions, "math_copysign", null);
+    __decorate([
+        Validate(1, 1, 'math_isfinite', false)
+    ], BuiltInFunctions, "math_isfinite", null);
+    __decorate([
+        Validate(1, 1, 'math_isinf', false)
+    ], BuiltInFunctions, "math_isinf", null);
+    __decorate([
+        Validate(1, 1, 'math_isnan', false)
+    ], BuiltInFunctions, "math_isnan", null);
+    __decorate([
+        Validate(2, 2, 'math_ldexp', false)
+    ], BuiltInFunctions, "math_ldexp", null);
+    __decorate([
+        Validate(1, 1, 'math_cbrt', false)
+    ], BuiltInFunctions, "math_cbrt", null);
+    __decorate([
+        Validate(1, 1, 'math_exp', false)
+    ], BuiltInFunctions, "math_exp", null);
+    __decorate([
+        Validate(1, 1, 'math_exps', false)
+    ], BuiltInFunctions, "math_exp2", null);
+    __decorate([
+        Validate(1, 1, 'math_expm1', false)
+    ], BuiltInFunctions, "math_expm1", null);
+    __decorate([
+        Validate(1, 1, 'math_gamma', false)
+    ], BuiltInFunctions, "math_gamma", null);
+    __decorate([
+        Validate(1, 1, 'math_lgamma', false)
+    ], BuiltInFunctions, "math_lgamma", null);
+    __decorate([
+        Validate(1, 2, 'math_log', true)
+    ], BuiltInFunctions, "math_log", null);
+    __decorate([
+        Validate(1, 1, 'math_log10', false)
+    ], BuiltInFunctions, "math_log10", null);
+    __decorate([
+        Validate(1, 1, 'math_log1p', false)
+    ], BuiltInFunctions, "math_log1p", null);
+    __decorate([
+        Validate(1, 1, 'math_log2', false)
+    ], BuiltInFunctions, "math_log2", null);
+    __decorate([
+        Validate(2, 2, 'math_pow', false)
+    ], BuiltInFunctions, "math_pow", null);
+    __decorate([
+        Validate(1, 1, 'math_radians', false)
+    ], BuiltInFunctions, "math_radians", null);
+    __decorate([
+        Validate(1, 1, 'math_sin', false)
+    ], BuiltInFunctions, "math_sin", null);
+    __decorate([
+        Validate(1, 1, 'math_sinh', false)
+    ], BuiltInFunctions, "math_sinh", null);
+    __decorate([
+        Validate(1, 1, 'math_tan', false)
+    ], BuiltInFunctions, "math_tan", null);
+    __decorate([
+        Validate(1, 1, 'math_tanh', false)
+    ], BuiltInFunctions, "math_tanh", null);
+    __decorate([
+        Validate(1, 1, 'math_sqrt', false)
+    ], BuiltInFunctions, "math_sqrt", null);
+    __decorate([
+        Validate(2, null, 'max', true)
+    ], BuiltInFunctions, "max", null);
+    __decorate([
+        Validate(2, null, 'min', true)
+    ], BuiltInFunctions, "min", null);
+    __decorate([
+        Validate(null, 0, 'random_random', true)
+    ], BuiltInFunctions, "random_random", null);
+    __decorate([
+        Validate(1, 2, 'round', true)
+    ], BuiltInFunctions, "round", null);
+    __decorate([
+        Validate(null, 0, 'time_time', true)
+    ], BuiltInFunctions, "time_time", null);
+    // NOTE: If we ever switch to another Python “chapter” (e.g. py_s2_constants),
+    //       just change the variable below to switch to the set.
+    const constants = py_s1_constants;
     /*
         Create a map to hold built-in constants.
         Each constant is stored with a string key and its corresponding value object.
     */
     const builtInConstants = new Map();
-    const math_e = { type: 'number', value: Math.E };
-    const math_inf = { type: 'number', value: Infinity };
-    const math_nan = { type: 'number', value: NaN };
-    const math_pi = { type: 'number', value: Math.PI };
-    const math_tau = { type: 'number', value: 2 * Math.PI };
-    builtInConstants.set('math_e', math_e);
-    builtInConstants.set('math_inf', math_inf);
-    builtInConstants.set('math_nan', math_nan);
-    builtInConstants.set('math_pi', math_pi);
-    builtInConstants.set('math_tau', math_tau);
+    const constantMap = {
+        math_e: { type: 'number', value: Math.E },
+        math_inf: { type: 'number', value: Infinity },
+        math_nan: { type: 'number', value: NaN },
+        math_pi: { type: 'number', value: Math.PI },
+        math_tau: { type: 'number', value: 2 * Math.PI },
+    };
+    for (const name of constants.constants) {
+        const valueObj = constantMap[name];
+        if (!valueObj) {
+            throw new Error(`Constant '${name}' is not implemented`);
+        }
+        builtInConstants.set(name, valueObj);
+    }
     /*
         Create a map to hold built-in functions.
         The keys are strings (function names) and the values are functions that can take any arguments.
     */
     const builtIns = new Map();
-    builtIns.set('_int', _int);
-    builtIns.set('_int_from_string', _int_from_string);
-    builtIns.set('abs', abs);
-    builtIns.set('char_at', char_at);
-    builtIns.set('error', error);
-    builtIns.set('input', input);
-    builtIns.set('isinstance', isinstance);
-    builtIns.set('math_acos', math_acos);
-    builtIns.set('math_acosh', math_acosh);
-    builtIns.set('math_asin', math_asin);
-    builtIns.set('math_asinh', math_asinh);
-    builtIns.set('math_atan', math_atan);
-    builtIns.set('math_atan2', math_atan2);
-    builtIns.set('math_atanh', math_atanh);
-    builtIns.set('math_cbrt', math_cbrt);
-    builtIns.set('math_ceil', math_ceil);
-    builtIns.set('math_comb', math_comb);
-    builtIns.set('math_copysign', math_copysign);
-    builtIns.set('math_cos', math_cos);
-    builtIns.set('math_cosh', math_cosh);
-    builtIns.set('math_degrees', math_degrees);
-    builtIns.set('math_erf', math_erf);
-    builtIns.set('math_erfc', math_erfc);
-    builtIns.set('math_exp', math_exp);
-    builtIns.set('math_exp2', math_exp2);
-    builtIns.set('math_expm1', math_expm1);
-    builtIns.set('math_fabs', math_fabs);
-    builtIns.set('math_factorial', math_factorial);
-    builtIns.set('math_floor', math_floor);
-    builtIns.set('math_fma', math_fma);
-    builtIns.set('math_fmod', math_fmod);
-    builtIns.set('math_gamma', math_gamma);
-    builtIns.set('math_lgamma', math_lgamma);
-    builtIns.set('math_gcd', math_gcd);
-    builtIns.set('math_isfinite', math_isfinite);
-    builtIns.set('math_isinf', math_isinf);
-    builtIns.set('math_isnan', math_isnan);
-    builtIns.set('math_isqrt', math_isqrt);
-    builtIns.set('math_lcm', math_lcm);
-    builtIns.set('math_ldexp', math_ldexp);
-    builtIns.set('math_log', math_log);
-    builtIns.set('math_log10', math_log10);
-    builtIns.set('math_log1p', math_log1p);
-    builtIns.set('math_log2', math_log2);
-    builtIns.set('math_nextafter', math_nextafter);
-    builtIns.set('math_perm', math_perm);
-    builtIns.set('math_pow', math_pow);
-    builtIns.set('math_radians', math_radians);
-    builtIns.set('math_remainder', math_remainder);
-    builtIns.set('math_sin', math_sin);
-    builtIns.set('math_sinh', math_sinh);
-    builtIns.set('math_sqrt', math_sqrt);
-    builtIns.set('math_tan', math_tan);
-    builtIns.set('math_tanh', math_tanh);
-    builtIns.set('math_trunc', math_trunc);
-    builtIns.set('math_ulp', math_ulp);
-    builtIns.set('max', max);
-    builtIns.set('min', min);
-    builtIns.set('print', print);
-    builtIns.set('random_random', random_random);
-    builtIns.set('round', round);
-    builtIns.set('str', str);
-    builtIns.set('time_time', time_time);
-    function _int(args, source, command, context) {
-        if (args.length === 0) {
-            return { type: 'bigint', value: '0' };
-        }
-        if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, '_int', Number(1), args, true));
-        }
-        const arg = args[0];
-        // If the value is a number, use Math.trunc to truncate toward zero.
-        if (arg.type === 'number') {
-            const truncated = Math.trunc(arg.value);
-            return { type: 'bigint', value: BigInt(truncated) };
-        }
-        // If the value is a bigint, simply return the same value.
-        if (arg.type === 'bigint') {
-            return { type: 'bigint', value: arg.value };
-        }
-        handleRuntimeError(context, new TypeError$1(source, command, context, arg.type, "float' or 'int"));
-    }
-    function _int_from_string(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, '_int_from_string', Number(1), args, true));
-        }
-        if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, '_int_from_string', Number(2), args, true));
-        }
-        const strVal = args[0];
-        if (strVal.type !== 'string') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "string"));
-        }
-        let base = 10;
-        if (args.length === 2) {
-            // The second argument must be either a bigint or a number (it will be converted to a number for uniform processing).
-            const baseVal = args[1];
-            if (baseVal.type === 'bigint') {
-                base = Number(baseVal.value);
-            }
-            else {
-                handleRuntimeError(context, new TypeError$1(source, command, context, args[1].type, "float' or 'int"));
-            }
-        }
-        // base should be in between 2 and 36
-        if (base < 2 || base > 36) {
-            handleRuntimeError(context, new ValueError(source, command, context, "_int_from_string"));
-        }
-        let str = strVal.value;
-        str = str.trim();
-        str = str.replace(/_/g, '');
-        // Parse the sign (determine if the value is positive or negative)
-        let sign = BigInt(1);
-        if (str.startsWith('+')) {
-            str = str.slice(1);
-        }
-        else if (str.startsWith('-')) {
-            sign = BigInt(-1);
-            str = str.slice(1);
-        }
-        // The remaining portion must consist of valid characters for the specified base.
-        const parsedNumber = parseInt(str, base);
-        if (isNaN(parsedNumber)) {
-            handleRuntimeError(context, new ValueError(source, command, context, "_int_from_string"));
-        }
-        const result = sign * BigInt(parsedNumber);
-        return { type: 'bigint', value: result };
-    }
-    function abs(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'abs', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'abs', Number(1), args, false));
-        }
-        const x = args[0];
-        switch (x.type) {
-            case 'bigint': {
-                const intVal = x.value;
-                const result = intVal < 0 ? -intVal : intVal;
-                return { type: 'int', value: result };
-            }
-            case 'number': {
-                return { type: 'number', value: Math.abs(x.value) };
-            }
-            case 'complex': {
-                // Calculate the modulus (absolute value) of a complex number.
-                const real = x.value.real;
-                const imag = x.value.imag;
-                const modulus = Math.sqrt(real * real + imag * imag);
-                return { type: 'number', value: modulus };
-            }
-            default:
-                handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "float', 'int' or 'complex"));
-        }
-    }
-    function toStr(val) {
-        return String(val.value);
-    }
-    function error(args, source, command, context) {
-        const output = "Error: " + args.map(arg => toStr(arg)).join(' ') + '\n';
-        throw new Error(output);
-    }
-    function isinstance(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'isinstance', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'isinstance', Number(2), args, false));
-        }
-        const obj = args[0];
-        const classinfo = args[1];
-        let expectedType;
-        if (classinfo.type === 'string') {
-            switch (classinfo.value) {
-                case 'int':
-                    expectedType = 'bigint';
-                    break;
-                case 'float':
-                    expectedType = 'number';
-                    break;
-                case 'string':
-                    expectedType = 'string';
-                    break;
-                case 'bool':
-                    expectedType = 'bool';
-                    break;
-                case 'complex':
-                    expectedType = 'complex';
-                    break;
-                case 'NoneType':
-                    expectedType = 'NoneType';
-                    break;
-                default:
-                    handleRuntimeError(context, new ValueError(source, command, context, "isinstance"));
-                    return;
-            }
-        }
-        else {
-            handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "string"));
-            return;
-        }
-        const result = obj.type === expectedType;
-        return { type: 'bool', value: result };
-    }
-    function math_acos(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_acos', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_acos', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (num < -1 || num > 1) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_acos"));
-        }
-        const result = Math.acos(num);
-        return { type: 'number', value: result };
-    }
-    function math_acosh(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_acosh', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_acosh', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (num < 1) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_acosh"));
-        }
-        const result = Math.acosh(num);
-        return { type: 'number', value: result };
-    }
-    function math_asin(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_asin', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_asin', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (num < -1 || num > 1) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_asin"));
-        }
-        const result = Math.asin(num);
-        return { type: 'number', value: result };
-    }
-    function math_asinh(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_asinh', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_asinh', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.asinh(num);
-        return { type: 'number', value: result };
-    }
-    function math_atan(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_atan', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_atan', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.atan(num);
-        return { type: 'number', value: result };
-    }
-    function math_atan2(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_atan', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_atan', Number(2), args, false));
-        }
-        const y = args[0];
-        const x = args[1];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        else if (y.type !== 'number' && y.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, y.type, "float' or 'int"));
-        }
-        let yNum, xNum;
-        if (y.type === 'number') {
-            yNum = y.value;
-        }
-        else {
-            yNum = Number(y.value);
-        }
-        if (x.type === 'number') {
-            xNum = x.value;
-        }
-        else {
-            xNum = Number(x.value);
-        }
-        const result = Math.atan2(yNum, xNum);
-        return { type: 'number', value: result };
-    }
-    function math_atanh(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_atanh', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_atanh', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (num <= -1 || num >= 1) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_atanh"));
-        }
-        const result = Math.atanh(num);
-        return { type: 'number', value: result };
-    }
-    function math_cos(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_cos', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_cos', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.cos(num);
-        return { type: 'number', value: result };
-    }
-    function math_cosh(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_cosh', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_cosh', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.cosh(num);
-        return { type: 'number', value: result };
-    }
-    function math_degrees(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_degrees', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_degrees', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = num * 180 / Math.PI;
-        return { type: 'number', value: result };
-    }
-    function math_erf(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_erf', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_erf', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const erfnum = erf(num);
-        return { type: 'number', value: erfnum };
-    }
-    function math_erfc(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_erfc', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_erfc', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        const erfc = 1 - math_erf(args[0], source, command, context).value;
-        return { type: 'number', value: erfc };
-    }
-    function char_at(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'char_at', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'char_at', Number(2), args, false));
-        }
-        const s = args[0];
-        const i = args[1];
-        if (s.type !== 'string') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, s.type, "string"));
-        }
-        if (i.type !== 'number' && i.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, i.type, "float' or 'int"));
-        }
-        const index = i.value;
-        return { type: 'string', value: (s.value)[index] };
-    }
-    function math_comb(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_comb', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_comb', Number(2), args, false));
-        }
-        const n = args[0];
-        const k = args[1];
-        if (n.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, n.type, "int"));
-        }
-        else if (k.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, k.type, "int"));
-        }
-        const nVal = BigInt(n.value);
-        const kVal = BigInt(k.value);
-        if (nVal < 0 || kVal < 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_comb"));
-        }
-        if (kVal > nVal) {
-            return { type: 'bigint', value: BigInt(0) };
-        }
-        let result = BigInt(1);
-        let kk = kVal > nVal - kVal ? nVal - kVal : kVal;
-        for (let i = BigInt(0); i < kk; i++) {
-            result = result * (nVal - i) / (i + BigInt(1));
-        }
-        return { type: 'bigint', value: result };
-    }
-    function math_factorial(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_factorial', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_factorial', Number(1), args, false));
-        }
-        const n = args[0];
-        if (n.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, n.type, "int"));
-        }
-        const nVal = BigInt(n.value);
-        if (nVal < 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_factorial"));
-        }
-        // 0! = 1
-        if (nVal === BigInt(0)) {
-            return { type: 'bigint', value: BigInt(1) };
-        }
-        let result = BigInt(1);
-        for (let i = BigInt(1); i <= nVal; i++) {
-            result *= i;
-        }
-        return { type: 'bigint', value: result };
-    }
-    function math_gcd(args, source, command, context) {
-        if (args.length === 0) {
-            return { type: 'bigint', value: BigInt(0) };
-        }
-        const values = args.map((v, idx) => {
-            if (v.type !== 'bigint') {
-                handleRuntimeError(context, new TypeError$1(source, command, context, v.type, "int"));
-            }
-            return BigInt(v.value);
-        });
-        const allZero = values.every(val => val === BigInt(0));
-        if (allZero) {
-            return { type: 'bigint', value: BigInt(0) };
-        }
-        let currentGcd = values[0] < 0 ? -values[0] : values[0];
-        for (let i = 1; i < values.length; i++) {
-            currentGcd = gcdOfTwo(currentGcd, values[i] < 0 ? -values[i] : values[i]);
-            if (currentGcd === BigInt(1)) {
-                break;
-            }
-        }
-        return { type: 'bigint', value: currentGcd };
-    }
-    function gcdOfTwo(a, b) {
-        let x = a;
-        let y = b;
-        while (y !== BigInt(0)) {
-            const temp = x % y;
-            x = y;
-            y = temp;
-        }
-        return x < 0 ? -x : x;
-    }
-    function math_isqrt(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_isqrt', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_isqrt', Number(1), args, false));
-        }
-        const nValObj = args[0];
-        if (nValObj.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, nValObj.type, "int"));
-        }
-        const n = nValObj.value;
-        if (n < 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_isqrt"));
-        }
-        if (n < 2) {
-            return { type: 'bigint', value: n };
-        }
-        let low = BigInt(1);
-        let high = n;
-        while (low < high) {
-            const mid = (low + high + BigInt(1)) >> BigInt(1);
-            const sq = mid * mid;
-            if (sq <= n) {
-                low = mid;
-            }
-            else {
-                high = mid - BigInt(1);
-            }
-        }
-        return { type: 'bigint', value: low };
-    }
-    function math_lcm(args, source, command, context) {
-        if (args.length === 0) {
-            return { type: 'bigint', value: BigInt(1) };
-        }
-        const values = args.map((val, idx) => {
-            if (val.type !== 'bigint') {
-                handleRuntimeError(context, new TypeError$1(source, command, context, val.type, "int"));
-            }
-            return BigInt(val.value);
-        });
-        if (values.some(v => v === BigInt(0))) {
-            return { type: 'bigint', value: BigInt(0) };
-        }
-        let currentLcm = absBigInt(values[0]);
-        for (let i = 1; i < values.length; i++) {
-            currentLcm = lcmOfTwo(currentLcm, absBigInt(values[i]));
-            if (currentLcm === BigInt(0)) {
-                break;
-            }
-        }
-        return { type: 'bigint', value: currentLcm };
-    }
-    function lcmOfTwo(a, b) {
-        const gcdVal = gcdOfTwo(a, b);
-        return BigInt((a / gcdVal) * b);
-    }
-    function absBigInt(x) {
-        return x < 0 ? -x : x;
-    }
-    function math_perm(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_perm', Number(1), args, true));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_perm', Number(2), args, true));
-        }
-        const nValObj = args[0];
-        if (nValObj.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, nValObj.type, "int"));
-        }
-        const n = BigInt(nValObj.value);
-        let k = n;
-        if (args.length === 2) {
-            const kValObj = args[1];
-            if (kValObj.type === 'null' || kValObj.type === 'undefined') {
-                k = n;
-            }
-            else if (kValObj.type === 'bigint') {
-                k = BigInt(kValObj.value);
-            }
-            else {
-                handleRuntimeError(context, new TypeError$1(source, command, context, kValObj.type, "int' or 'None"));
-            }
-        }
-        if (n < 0 || k < 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_perm"));
-        }
-        if (k > n) {
-            return { type: 'bigint', value: BigInt(0) };
-        }
-        let result = BigInt(1);
-        for (let i = BigInt(0); i < k; i++) {
-            result *= (n - i);
-        }
-        return { type: 'bigint', value: result };
-    }
-    function math_ceil(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_ceil', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_ceil', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type === 'bigint') {
-            return x;
-        }
-        if (x.type === 'number') {
-            const numVal = x.value;
-            if (typeof numVal !== 'number') {
-                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-            }
-            const ceiled = BigInt(Math.ceil(numVal));
-            return { type: 'bigint', value: ceiled };
-        }
-        handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-    }
-    function math_fabs(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_fabs', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_fabs', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type === 'bigint') {
-            const bigVal = BigInt(x.value);
-            const absVal = bigVal < 0 ? -Number(bigVal) : Number(bigVal);
-            return { type: 'number', value: absVal };
-        }
-        if (x.type === 'number') {
-            const numVal = x.value;
-            if (typeof numVal !== 'number') {
-                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-            }
-            const absVal = Math.abs(numVal);
-            return { type: 'number', value: absVal };
-        }
-        handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-    }
-    function math_floor(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_floor', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_floor', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type === 'bigint') {
-            return x;
-        }
-        if (x.type === 'number') {
-            const numVal = x.value;
-            if (typeof numVal !== 'number') {
-                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-            }
-            const floored = BigInt(Math.floor(numVal));
-            return { type: 'bigint', value: floored };
-        }
-        handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-    }
-    // Computes the product of a and b along with the rounding error using Dekker's algorithm.
-    function twoProd(a, b) {
-        const prod = a * b;
-        const c = 134217729; // 2^27 + 1
-        const a_hi = (a * c) - ((a * c) - a);
-        const a_lo = a - a_hi;
-        const b_hi = (b * c) - ((b * c) - b);
-        const b_lo = b - b_hi;
-        const err = a_lo * b_lo - (((prod - a_hi * b_hi) - a_lo * b_hi) - a_hi * b_lo);
-        return { prod, err };
-    }
-    // Computes the sum of a and b along with the rounding error using Fast TwoSum.
-    function twoSum(a, b) {
-        const sum = a + b;
-        const v = sum - a;
-        const err = (a - (sum - v)) + (b - v);
-        return { sum, err };
-    }
-    // Performs a fused multiply-add operation: computes (x * y) + z with a single rounding.
-    function fusedMultiplyAdd(x, y, z) {
-        const { prod, err: prodErr } = twoProd(x, y);
-        const { sum, err: sumErr } = twoSum(prod, z);
-        const result = sum + (prodErr + sumErr);
-        return result;
-    }
-    function toNumber(val, source, command, context) {
-        if (val.type === 'bigint') {
-            return Number(val.value);
-        }
-        else if (val.type === 'number') {
-            return val.value;
-        }
-        else {
-            handleRuntimeError(context, new TypeError$1(source, command, context, val.type, "float' or 'int"));
-            return 0;
-        }
-    }
-    function math_fma(args, source, command, context) {
-        if (args.length < 3) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_fma', Number(3), args, false));
-        }
-        else if (args.length > 3) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_fma', Number(3), args, false));
-        }
-        const xVal = toNumber(args[0], source, command, context);
-        const yVal = toNumber(args[1], source, command, context);
-        const zVal = toNumber(args[2], source, command, context);
-        // Special-case handling: According to the IEEE 754 standard, fma(0, inf, nan)
-        // and fma(inf, 0, nan) should return NaN.
-        if (isNaN(xVal) || isNaN(yVal) || isNaN(zVal)) {
-            return { type: 'number', value: NaN };
-        }
-        if (xVal === 0 && !isFinite(yVal) && isNaN(zVal)) {
-            return { type: 'number', value: NaN };
-        }
-        if (yVal === 0 && !isFinite(xVal) && isNaN(zVal)) {
-            return { type: 'number', value: NaN };
-        }
-        const result = fusedMultiplyAdd(xVal, yVal, zVal);
-        return { type: 'number', value: result };
-    }
-    function math_fmod(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_fmod', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_fmod', Number(2), args, false));
-        }
-        // Convert inputs to numbers
-        const xVal = toNumber(args[0], source, command, context);
-        const yVal = toNumber(args[1], source, command, context);
-        // Divisor cannot be zero
-        if (yVal === 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_fmod"));
-        }
-        // JavaScript's % operator behaves similarly to C's fmod
-        // in that the sign of the result is the same as the sign of x.
-        // For corner cases (NaN, Infinity), JavaScript remainder
-        // yields results consistent with typical C library fmod behavior.
-        const remainder = xVal % yVal;
-        return { type: 'number', value: remainder };
-    }
-    function roundToEven(num) {
-        const floorVal = Math.floor(num);
-        const ceilVal = Math.ceil(num);
-        const diffFloor = num - floorVal;
-        const diffCeil = ceilVal - num;
-        if (diffFloor < diffCeil) {
-            return floorVal;
-        }
-        else if (diffCeil < diffFloor) {
-            return ceilVal;
-        }
-        else {
-            return (floorVal % 2 === 0) ? floorVal : ceilVal;
-        }
-    }
-    function math_remainder(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_remainder', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_remainder', Number(2), args, false));
-        }
-        const x = args[0];
-        const y = args[1];
-        let xValue;
-        if (x.type === 'bigint') {
-            xValue = Number(x.value);
-        }
-        else if (x.type === 'number') {
-            xValue = x.value;
-        }
-        else {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-            return;
-        }
-        let yValue;
-        if (y.type === 'bigint') {
-            yValue = Number(y.value);
-        }
-        else if (y.type === 'number') {
-            yValue = y.value;
-        }
-        else {
-            handleRuntimeError(context, new TypeError$1(source, command, context, y.type, "float' or 'int"));
-            return;
-        }
-        if (yValue === 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_remainder"));
-        }
-        const quotient = xValue / yValue;
-        const n = roundToEven(quotient);
-        const remainder = xValue - n * yValue;
-        return { type: 'number', value: remainder };
-    }
-    function math_trunc(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_trunc', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_trunc', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type === 'bigint') {
-            return x;
-        }
-        if (x.type === 'number') {
-            const numVal = x.value;
-            if (typeof numVal !== 'number') {
-                handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-            }
-            let truncated;
-            if (numVal === 0) {
-                truncated = 0;
-            }
-            else if (numVal < 0) {
-                truncated = Math.ceil(numVal);
-            }
-            else {
-                truncated = Math.floor(numVal);
-            }
-            return { type: 'bigint', value: BigInt(truncated) };
-        }
-        handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-    }
-    function math_copysign(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_copysign', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_copysign', Number(2), args, false));
-        }
-        const [x, y] = args;
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        else if (y.type !== 'number' && y.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, y.type, "float' or 'int"));
-        }
-        const xVal = Number(x.value);
-        const yVal = Number(y.value);
-        const absVal = Math.abs(xVal);
-        const isNegative = yVal < 0 || (Object.is(yVal, -0));
-        const result = isNegative ? -absVal : absVal;
-        return { type: 'number', value: Number(result) };
-    }
-    function math_isfinite(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_isfinite', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_isfinite', Number(1), args, false));
-        }
-        const xValObj = args[0];
-        if (xValObj.type !== 'number' && xValObj.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, xValObj.type, "float' or 'int"));
-        }
-        const x = Number(xValObj.value);
-        const result = Number.isFinite(x);
-        return { type: 'bool', value: result };
-    }
-    function math_isinf(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_isinf', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_isinf', Number(1), args, false));
-        }
-        const xValObj = args[0];
-        if (xValObj.type !== 'number' && xValObj.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, xValObj.type, "float' or 'int"));
-        }
-        const x = Number(xValObj.value);
-        const result = (x === Infinity || x === -Infinity);
-        return { type: 'bool', value: result };
-    }
-    function math_isnan(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_isnan', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_isnan', Number(1), args, false));
-        }
-        const xValObj = args[0];
-        if (xValObj.type !== 'number' && xValObj.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, xValObj.type, "float' or 'int"));
-        }
-        const x = Number(xValObj.value);
-        const result = Number.isNaN(x);
-        return { type: 'bool', value: result };
-    }
-    function math_ldexp(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_ldexp', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_ldexp', Number(2), args, false));
-        }
-        const xVal = toNumber(args[0], source, command, context);
-        if (args[1].type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, args[1].type, "int"));
-        }
-        const expVal = args[1].value;
-        // Perform x * 2^expVal
-        // In JavaScript, 2**expVal may overflow or underflow, yielding Infinity or 0 respectively.
-        // That behavior parallels typical C library rules for ldexp.
-        const result = xVal * Math.pow(2, Number(expVal));
-        return { type: 'number', value: result };
-    }
-    function math_nextafter(args, source, command, context) {
-        // TODO: Implement math_nextafter using proper bit-level manipulation and handling special cases (NaN, Infinity, steps, etc.)
-        throw new Error("math_nextafter not implemented");
-    }
-    function math_ulp(args, source, command, context) {
-        // TODO: Implement math_ulp to return the unit in the last place (ULP) of the given floating-point number.
-        throw new Error("math_ulp not implemented");
-    }
-    function math_cbrt(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_cbrt', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_cbrt', Number(1), args, false));
-        }
-        const xVal = args[0];
-        let x;
-        if (xVal.type !== 'number') {
-            if (xVal.type === 'bigint') {
-                x = Number(xVal.value);
-            }
-            else {
-                handleRuntimeError(context, new TypeError$1(source, command, context, xVal.type, "float' or 'int"));
-                return;
-            }
-        }
-        else {
-            x = xVal.value;
-        }
-        const result = Math.cbrt(x);
-        return { type: 'number', value: result };
-    }
-    function math_exp(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_exp', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_exp', Number(1), args, false));
-        }
-        const xVal = args[0];
-        let x;
-        if (xVal.type !== 'number') {
-            if (xVal.type === 'bigint') {
-                x = Number(xVal.value);
-            }
-            else {
-                handleRuntimeError(context, new TypeError$1(source, command, context, xVal.type, "float' or 'int"));
-                return;
-            }
-        }
-        else {
-            x = xVal.value;
-        }
-        const result = Math.exp(x);
-        return { type: 'number', value: result };
-    }
-    function math_exp2(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_exp2', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_exp2', Number(1), args, false));
-        }
-        const xVal = args[0];
-        let x;
-        if (xVal.type !== 'number') {
-            if (xVal.type === 'bigint') {
-                x = Number(xVal.value);
-            }
-            else {
-                handleRuntimeError(context, new TypeError$1(source, command, context, xVal.type, "float' or 'int"));
-                return;
-            }
-        }
-        else {
-            x = xVal.value;
-        }
-        const result = Math.pow(2, x);
-        return { type: 'number', value: result };
-    }
-    function math_expm1(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_expm1', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_expm1', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.expm1(num);
-        return { type: 'number', value: result };
-    }
-    function math_gamma(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_gamma', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_gamma', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        const z = toNumber(x, source, command, context);
-        const result = gamma(z);
-        return { type: 'number', value: result };
-    }
-    function math_lgamma(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_lgamma', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_lgamma', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        const z = toNumber(x, source, command, context);
-        const result = lgamma(z);
-        return { type: 'number', value: result };
-    }
-    function math_log(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_gamma', Number(1), args, true));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_gamma', Number(2), args, true));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (num <= 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_log"));
-        }
-        if (args.length === 1) {
-            return { type: 'number', value: Math.log(num) };
-        }
-        const baseArg = args[1];
-        if (baseArg.type !== 'number' && baseArg.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, baseArg.type, "float' or 'int"));
-        }
-        let baseNum;
-        if (baseArg.type === 'number') {
-            baseNum = baseArg.value;
-        }
-        else {
-            baseNum = Number(baseArg.value);
-        }
-        if (baseNum <= 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_log"));
-        }
-        const result = Math.log(num) / Math.log(baseNum);
-        return { type: 'number', value: result };
-    }
-    function math_log10(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_log10', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_log10', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (num <= 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_log10"));
-        }
-        const result = Math.log10(num);
-        return { type: 'number', value: result };
-    }
-    function math_log1p(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_log1p', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_log1p', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (1 + num <= 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_log1p"));
-        }
-        const result = Math.log1p(num);
-        return { type: 'number', value: result };
-    }
-    function math_log2(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_log2', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_log2', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, args[0].type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (num <= 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_log2"));
-        }
-        const result = Math.log2(num);
-        return { type: 'number', value: result };
-    }
-    function math_pow(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_pow', Number(2), args, false));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_pow', Number(2), args, false));
-        }
-        const base = args[0];
-        const exp = args[1];
-        if (base.type !== 'number' && base.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, base.type, "float' or 'int"));
-        }
-        else if (exp.type !== 'number' && exp.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, exp.type, "float' or 'int"));
-        }
-        let baseNum;
-        if (base.type === 'number') {
-            baseNum = base.value;
-        }
-        else {
-            baseNum = Number(base.value);
-        }
-        let expNum;
-        if (exp.type === 'number') {
-            expNum = exp.value;
-        }
-        else {
-            expNum = Number(exp.value);
-        }
-        const result = Math.pow(baseNum, expNum);
-        return { type: 'number', value: result };
-    }
-    function math_radians(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_radians', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_radians', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let deg;
-        if (x.type === 'number') {
-            deg = x.value;
-        }
-        else {
-            deg = Number(x.value);
-        }
-        const radians = deg * Math.PI / 180;
-        return { type: 'number', value: radians };
-    }
-    function math_sin(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_sin', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_sin', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.sin(num);
-        return { type: 'number', value: result };
-    }
-    function math_sinh(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_sinh', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_sinh', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.sinh(num);
-        return { type: 'number', value: result };
-    }
-    function math_tan(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_tan', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_tan', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.tan(num);
-        return { type: 'number', value: result };
-    }
-    function math_tanh(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_tanh', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_tanh', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        const result = Math.tanh(num);
-        return { type: 'number', value: result };
-    }
-    function math_sqrt(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'math_sqrt', Number(1), args, false));
-        }
-        else if (args.length > 1) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'math_sqrt', Number(1), args, false));
-        }
-        const x = args[0];
-        if (x.type !== 'number' && x.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, x.type, "float' or 'int"));
-        }
-        let num;
-        if (x.type === 'number') {
-            num = x.value;
-        }
-        else {
-            num = Number(x.value);
-        }
-        if (num < 0) {
-            handleRuntimeError(context, new ValueError(source, command, context, "math_sqrt"));
-        }
-        const result = Math.sqrt(num);
-        return { type: 'number', value: result };
-    }
-    function max(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'max', Number(2), args, true));
-        }
-        const numericTypes = ['bigint', 'number'];
-        const firstType = args[0].type;
-        let isNumeric = numericTypes.includes(firstType);
-        let isString = firstType === 'string';
-        for (let i = 1; i < args.length; i++) {
-            const t = args[i].type;
-            if (isNumeric && !numericTypes.includes(t)) {
-                handleRuntimeError(context, new TypeError$1(source, command, context, args[i].type, "float' or 'int"));
-            }
-            if (isString && t !== 'string') {
-                handleRuntimeError(context, new TypeError$1(source, command, context, args[i].type, "string"));
-            }
-        }
-        let useFloat = false;
-        if (isNumeric) {
-            for (const arg of args) {
-                if (arg.type === 'number') {
-                    useFloat = true;
-                    break;
-                }
-            }
-        }
-        let maxIndex = 0;
-        if (isNumeric) {
-            if (useFloat) {
-                let maxVal = Number(args[0].value);
-                for (let i = 1; i < args.length; i++) {
-                    const curr = Number(args[i].value);
-                    if (curr > maxVal) {
-                        maxVal = curr;
-                        maxIndex = i;
-                    }
-                }
-            }
-            else {
-                let maxVal = args[0].value;
-                for (let i = 1; i < args.length; i++) {
-                    const curr = args[i].value;
-                    if (curr > maxVal) {
-                        maxVal = curr;
-                        maxIndex = i;
-                    }
-                }
-            }
-        }
-        else if (isString) {
-            let maxVal = args[0].value;
-            for (let i = 1; i < args.length; i++) {
-                const curr = args[i].value;
-                if (curr > maxVal) {
-                    maxVal = curr;
-                    maxIndex = i;
-                }
-            }
-        }
-        else {
-            // Won't happen
-            throw new Error(`max: unsupported type ${firstType}`);
-        }
-        return args[maxIndex];
-    }
-    function min(args, source, command, context) {
-        if (args.length < 2) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'min', Number(2), args, true));
-        }
-        const numericTypes = ['bigint', 'number'];
-        const firstType = args[0].type;
-        let isNumeric = numericTypes.includes(firstType);
-        let isString = firstType === 'string';
-        for (let i = 1; i < args.length; i++) {
-            const t = args[i].type;
-            if (isNumeric && !numericTypes.includes(t)) {
-                handleRuntimeError(context, new TypeError$1(source, command, context, args[i].type, "float' or 'int"));
-            }
-            if (isString && t !== 'string') {
-                handleRuntimeError(context, new TypeError$1(source, command, context, args[i].type, "string"));
-            }
-        }
-        let useFloat = false;
-        if (isNumeric) {
-            for (const arg of args) {
-                if (arg.type === 'number') {
-                    useFloat = true;
-                    break;
-                }
-            }
-        }
-        let maxIndex = 0;
-        if (isNumeric) {
-            if (useFloat) {
-                let maxVal = Number(args[0].value);
-                for (let i = 1; i < args.length; i++) {
-                    const curr = Number(args[i].value);
-                    if (curr < maxVal) {
-                        maxVal = curr;
-                        maxIndex = i;
-                    }
-                }
-            }
-            else {
-                let maxVal = args[0].value;
-                for (let i = 1; i < args.length; i++) {
-                    const curr = args[i].value;
-                    if (curr < maxVal) {
-                        maxVal = curr;
-                        maxIndex = i;
-                    }
-                }
-            }
-        }
-        else if (isString) {
-            let maxVal = args[0].value;
-            for (let i = 1; i < args.length; i++) {
-                const curr = args[i].value;
-                if (curr < maxVal) {
-                    maxVal = curr;
-                    maxIndex = i;
-                }
-            }
-        }
-        else {
-            // Won't happen
-            throw new Error(`min: unsupported type ${firstType}`);
-        }
-        return args[maxIndex];
-    }
-    function random_random(args, source, command, context) {
-        if (args.length > 0) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'random_random', Number(0), args, false));
-        }
-        const result = Math.random();
-        return { type: 'number', value: result };
-    }
-    function round(args, source, command, context) {
-        if (args.length < 1) {
-            handleRuntimeError(context, new MissingRequiredPositionalError(source, command, 'round', Number(1), args, true));
-        }
-        else if (args.length > 2) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'round', Number(2), args, true));
-        }
-        const numArg = args[0];
-        if (numArg.type !== 'number' && numArg.type !== 'bigint') {
-            handleRuntimeError(context, new TypeError$1(source, command, context, numArg.type, "float' or 'int"));
-        }
-        let ndigitsArg = { value: BigInt(0) };
-        if (args.length === 2 && args[1].type !== 'NoneType') {
-            ndigitsArg = args[1];
-        }
-        if (numArg.type === 'number') {
-            let numberValue = numArg.value;
-            if (ndigitsArg.value > 0) {
-                const shifted = Number(numberValue.toFixed(Number(ndigitsArg.value)));
-                return { type: 'number', value: shifted };
-            }
-            else if (ndigitsArg.value === BigInt(0)) {
-                const shifted = Math.round(numArg.value);
-                return { type: 'bigint', value: BigInt(shifted) };
-            }
-            else {
-                const shifted = Math.round(numArg.value / (10 ** (-Number(ndigitsArg.value)))) * (10 ** (-Number(ndigitsArg.value)));
-                return { type: 'number', value: shifted };
-            }
-        }
-        else {
-            if (ndigitsArg.value >= 0) {
-                return numArg;
-            }
-            else {
-                const shifted = numArg.value / (BigInt(10) ** (-ndigitsArg.value)) * (BigInt(10) ** (-ndigitsArg.value));
-                return { type: 'bigint', value: shifted };
-            }
-        }
-    }
-    function time_time(args, source, command, context) {
-        if (args.length > 0) {
-            handleRuntimeError(context, new TooManyPositionalArgumentsError(source, command, 'time_time', Number(0), args, false));
-        }
-        const currentTime = Date.now();
-        return { type: 'number', value: currentTime };
+    for (const name of constants.builtInFuncs) {
+        let impl = BuiltInFunctions[name];
+        if (typeof impl !== 'function') {
+            throw new Error(`BuiltInFunctions.${name} is not implemented`);
+        }
+        builtIns.set(name, impl);
     }
     /**
      * Converts a number to a string that mimics Python's float formatting behavior.
@@ -22605,23 +22490,6 @@
             ret = obj.value.toString();
         }
         return ret;
-    }
-    function str(args, source, command, context) {
-        if (args.length === 0) {
-            return { type: 'string', value: "" };
-        }
-        const obj = args[0];
-        const result = toPythonString(obj);
-        return { type: 'string', value: result };
-    }
-    function input(args, source, command, context) {
-        // TODO: : call conductor to receive user input
-    }
-    function print(args, source, command, context) {
-        const pieces = args.map(arg => toPythonString(arg));
-        const output = pieces.join(' ');
-        addPrint(output);
-        //return { type: 'string', value: output };
     }
 
     class CSEBreak {
@@ -23040,6 +22908,22 @@ You called ${this.functionName}() without providing the required positional argu
             this.message = msg;
         }
     };
+    class SublanguageError extends RuntimeSourceError {
+        constructor(source, node, context, functionName, chapter, details) {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+            super(node);
+            this.type = ErrorType.TYPE;
+            const index = (_g = (_c = (_b = (_a = node.loc) === null || _a === void 0 ? void 0 : _a.start) === null || _b === void 0 ? void 0 : _b.index) !== null && _c !== void 0 ? _c : (_f = (_e = (_d = node.srcNode) === null || _d === void 0 ? void 0 : _d.loc) === null || _e === void 0 ? void 0 : _e.start) === null || _f === void 0 ? void 0 : _f.index) !== null && _g !== void 0 ? _g : 0;
+            const { line, fullLine } = getFullLine$1(source, index);
+            const snippet = (_m = (_j = (_h = node.loc) === null || _h === void 0 ? void 0 : _h.source) !== null && _j !== void 0 ? _j : (_l = (_k = node.srcNode) === null || _k === void 0 ? void 0 : _k.loc) === null || _l === void 0 ? void 0 : _l.source) !== null && _m !== void 0 ? _m : '<unknown source>';
+            const offset = fullLine.indexOf(snippet);
+            const indicator = createErrorIndicator(snippet, '@');
+            const name = 'SublanguageError';
+            const hint = 'Feature not supported in Python §' + chapter + '. ';
+            const suggestion = `The call to '${functionName}()' relies on behaviour that is valid in full Python but outside the Python §1 sublanguage${details ? ': ' + details : ''}.`;
+            this.message = `${name} at line ${line}\n\n ${fullLine}\n ${' '.repeat(offset)}${indicator}\n${hint}${suggestion}`;
+        }
+    }
 
     /*
         The offset is calculated as follows:
@@ -26776,119 +26660,105 @@ You called ${this.functionName}() without providing the required positional argu
         }
     }
 
-    let RunnerPlugin = (() => {
-        let _classDecorators = [checkIsPluginClass];
-        let _classDescriptor;
-        let _classExtraInitializers = [];
-        let _classThis;
-        _classThis = class {
-            requestFile(fileName) {
-                return this.__fileRpc.requestFile(fileName);
-            }
-            requestChunk() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    return (yield this.__chunkQueue.receive()).chunk;
-                });
-            }
-            requestInput() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const { message } = yield this.__ioQueue.receive();
-                    return message;
-                });
-            }
-            tryRequestInput() {
-                const out = this.__ioQueue.tryReceive();
-                return out === null || out === void 0 ? void 0 : out.message;
-            }
-            sendOutput(message) {
-                this.__ioQueue.send({ message });
-            }
-            sendError(error) {
-                this.__errorChannel.send({ error });
-            }
-            updateStatus(status, isActive) {
-                this.__statusChannel.send({ status, isActive });
-            }
-            hostLoadPlugin(pluginName) {
-                this.__serviceChannel.send(new PluginServiceMessage(pluginName));
-            }
-            registerPlugin(pluginClass, ...arg) {
-                return this.__conduit.registerPlugin(pluginClass, ...arg);
-            }
-            unregisterPlugin(plugin) {
-                this.__conduit.unregisterPlugin(plugin);
-            }
-            registerModule(moduleClass) {
-                if (!this.__isCompatibleWithModules)
-                    throw new ConductorInternalError("Evaluator has no data interface");
-                return this.registerPlugin(moduleClass, this.__evaluator);
-            }
-            unregisterModule(module) {
-                this.unregisterPlugin(module);
-            }
-            importAndRegisterExternalPlugin(location, ...arg) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const pluginClass = yield importExternalPlugin(location);
-                    return this.registerPlugin(pluginClass, ...arg);
-                });
-            }
-            importAndRegisterExternalModule(location) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    const moduleClass = yield importExternalModule(location);
-                    return this.registerModule(moduleClass);
-                });
-            }
-            constructor(conduit, [fileChannel, chunkChannel, serviceChannel, ioChannel, errorChannel, statusChannel], evaluatorClass) {
+    let RunnerPlugin = class RunnerPlugin {
+        requestFile(fileName) {
+            return this.__fileRpc.requestFile(fileName);
+        }
+        requestChunk() {
+            return __awaiter(this, void 0, void 0, function* () {
+                return (yield this.__chunkQueue.receive()).chunk;
+            });
+        }
+        requestInput() {
+            return __awaiter(this, void 0, void 0, function* () {
+                const { message } = yield this.__ioQueue.receive();
+                return message;
+            });
+        }
+        tryRequestInput() {
+            const out = this.__ioQueue.tryReceive();
+            return out === null || out === void 0 ? void 0 : out.message;
+        }
+        sendOutput(message) {
+            this.__ioQueue.send({ message });
+        }
+        sendError(error) {
+            this.__errorChannel.send({ error });
+        }
+        updateStatus(status, isActive) {
+            this.__statusChannel.send({ status, isActive });
+        }
+        hostLoadPlugin(pluginName) {
+            this.__serviceChannel.send(new PluginServiceMessage(pluginName));
+        }
+        registerPlugin(pluginClass, ...arg) {
+            return this.__conduit.registerPlugin(pluginClass, ...arg);
+        }
+        unregisterPlugin(plugin) {
+            this.__conduit.unregisterPlugin(plugin);
+        }
+        registerModule(moduleClass) {
+            if (!this.__isCompatibleWithModules)
+                throw new ConductorInternalError("Evaluator has no data interface");
+            return this.registerPlugin(moduleClass, this.__evaluator);
+        }
+        unregisterModule(module) {
+            this.unregisterPlugin(module);
+        }
+        importAndRegisterExternalPlugin(location, ...arg) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const pluginClass = yield importExternalPlugin(location);
+                return this.registerPlugin(pluginClass, ...arg);
+            });
+        }
+        importAndRegisterExternalModule(location) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const moduleClass = yield importExternalModule(location);
+                return this.registerModule(moduleClass);
+            });
+        }
+        constructor(conduit, [fileChannel, chunkChannel, serviceChannel, ioChannel, errorChannel, statusChannel], evaluatorClass) {
+            var _a;
+            this.name = "__runner_main" /* InternalPluginName.RUNNER_MAIN */;
+            // @ts-expect-error TODO: figure proper way to typecheck this
+            this.__serviceHandlers = new Map([
+                [0 /* ServiceMessageType.HELLO */, function helloServiceHandler(message) {
+                        if (message.data.version < 0 /* Constant.PROTOCOL_MIN_VERSION */) {
+                            this.__serviceChannel.send(new AbortServiceMessage(0 /* Constant.PROTOCOL_MIN_VERSION */));
+                            console.error(`Host's protocol version (${message.data.version}) must be at least ${0 /* Constant.PROTOCOL_MIN_VERSION */}`);
+                        }
+                        else {
+                            console.log(`Host is using protocol version ${message.data.version}`);
+                        }
+                    }],
+                [1 /* ServiceMessageType.ABORT */, function abortServiceHandler(message) {
+                        console.error(`Host expects at least protocol version ${message.data.minVersion}, but we are on version ${0 /* Constant.PROTOCOL_VERSION */}`);
+                        this.__conduit.terminate();
+                    }],
+                [2 /* ServiceMessageType.ENTRY */, function entryServiceHandler(message) {
+                        this.__evaluator.startEvaluator(message.data);
+                    }]
+            ]);
+            this.__conduit = conduit;
+            this.__fileRpc = makeRpc(fileChannel, {});
+            this.__chunkQueue = new ChannelQueue(chunkChannel);
+            this.__serviceChannel = serviceChannel;
+            this.__ioQueue = new ChannelQueue(ioChannel);
+            this.__errorChannel = errorChannel;
+            this.__statusChannel = statusChannel;
+            this.__serviceChannel.send(new HelloServiceMessage());
+            this.__serviceChannel.subscribe(message => {
                 var _a;
-                this.name = "__runner_main" /* InternalPluginName.RUNNER_MAIN */;
-                // @ts-expect-error TODO: figure proper way to typecheck this
-                this.__serviceHandlers = new Map([
-                    [0 /* ServiceMessageType.HELLO */, function helloServiceHandler(message) {
-                            if (message.data.version < 0 /* Constant.PROTOCOL_MIN_VERSION */) {
-                                this.__serviceChannel.send(new AbortServiceMessage(0 /* Constant.PROTOCOL_MIN_VERSION */));
-                                console.error(`Host's protocol version (${message.data.version}) must be at least ${0 /* Constant.PROTOCOL_MIN_VERSION */}`);
-                            }
-                            else {
-                                console.log(`Host is using protocol version ${message.data.version}`);
-                            }
-                        }],
-                    [1 /* ServiceMessageType.ABORT */, function abortServiceHandler(message) {
-                            console.error(`Host expects at least protocol version ${message.data.minVersion}, but we are on version ${0 /* Constant.PROTOCOL_VERSION */}`);
-                            this.__conduit.terminate();
-                        }],
-                    [2 /* ServiceMessageType.ENTRY */, function entryServiceHandler(message) {
-                            this.__evaluator.startEvaluator(message.data);
-                        }]
-                ]);
-                this.__conduit = conduit;
-                this.__fileRpc = makeRpc(fileChannel, {});
-                this.__chunkQueue = new ChannelQueue(chunkChannel);
-                this.__serviceChannel = serviceChannel;
-                this.__ioQueue = new ChannelQueue(ioChannel);
-                this.__errorChannel = errorChannel;
-                this.__statusChannel = statusChannel;
-                this.__serviceChannel.send(new HelloServiceMessage());
-                this.__serviceChannel.subscribe(message => {
-                    var _a;
-                    (_a = this.__serviceHandlers.get(message.type)) === null || _a === void 0 ? void 0 : _a.call(this, message);
-                });
-                this.__evaluator = new evaluatorClass(this);
-                this.__isCompatibleWithModules = (_a = this.__evaluator.hasDataInterface) !== null && _a !== void 0 ? _a : false;
-            }
-        };
-        __setFunctionName(_classThis, "RunnerPlugin");
-        (() => {
-            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
-            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
-            _classThis = _classDescriptor.value;
-            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
-        })();
-        _classThis.channelAttach = ["__file_rpc" /* InternalChannelName.FILE */, "__chunk" /* InternalChannelName.CHUNK */, "__service" /* InternalChannelName.SERVICE */, "__stdio" /* InternalChannelName.STANDARD_IO */, "__error" /* InternalChannelName.ERROR */, "__status" /* InternalChannelName.STATUS */];
-        (() => {
-            __runInitializers(_classThis, _classExtraInitializers);
-        })();
-        return _classThis;
-    })();
+                (_a = this.__serviceHandlers.get(message.type)) === null || _a === void 0 ? void 0 : _a.call(this, message);
+            });
+            this.__evaluator = new evaluatorClass(this);
+            this.__isCompatibleWithModules = (_a = this.__evaluator.hasDataInterface) !== null && _a !== void 0 ? _a : false;
+        }
+    };
+    RunnerPlugin.channelAttach = ["__file_rpc" /* InternalChannelName.FILE */, "__chunk" /* InternalChannelName.CHUNK */, "__service" /* InternalChannelName.SERVICE */, "__stdio" /* InternalChannelName.STANDARD_IO */, "__error" /* InternalChannelName.ERROR */, "__status" /* InternalChannelName.STATUS */];
+    RunnerPlugin = __decorate([
+        checkIsPluginClass
+    ], RunnerPlugin);
 
     /**
      * Initialise this runner with the evaluator to be used.

@@ -239,4 +239,3 @@ const options: IOptions = {
 // }
 
 const {runnerPlugin, conduit} = initialise(PyEvaluator);
-

@@ -1,6 +1,7 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
+import json from '@rollup/plugin-json';
 
 /**
  * @type {import('rollup').RollupOptions}
@@ -14,6 +15,7 @@ const config = {
     sourcemap: true                  // 若要调试，可以开启source map
   },
   plugins: [
+    json(),
     resolve(),                       // 支持从node_modules中解析依赖
     commonjs(),                      // 将commonjs依赖转成ESM
     typescript({                     // 编译TypeScript

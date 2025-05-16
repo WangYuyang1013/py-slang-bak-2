@@ -33,3 +33,6 @@ export declare class ValueError extends RuntimeSourceError {
 export declare class TypeError extends RuntimeSourceError {
     constructor(source: string, node: es.Node, context: Context, originalType: string, targetType: string);
 }
+export declare class SublanguageError extends RuntimeSourceError {
+    constructor(source: string, node: es.Node, context: Context, functionName: string, chapter: string, details?: string);
+}
